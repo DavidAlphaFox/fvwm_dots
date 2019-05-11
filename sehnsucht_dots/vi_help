@@ -1,0 +1,97 @@
+----------------------------------
+Function Key Mappings (Customized)
+----------------------------------
+
+ ctrl+h:  get help (show this screen)
+ F2:      set number
+ F3:      set nonumber
+ F4:      set autoindent
+ F5:      set noautoindent
+ F6:      set list (show white space and line ending)
+ F7:      set nolist
+
+----------------                        -----------------
+Editing Commands                        Deleting Commands
+----------------                        -----------------
+
+ i	insert				x	delete current character
+ I	insert (head of line)		3x	delete 3 characters
+ o	open a new line (below)		X	delete character to left
+ O	open a new line (above)		dw	delete current word
+ a	append				d3w	delete 3 words from 
+current word
+ A	append at end of line		db	delete one word to left
+ u	undo				d0	delete to beginning of 
+line
+ .	repeat last command		d$	delete to end of line
+					dd      delete current line
+					5dd     delete 5 lines
+
+-------------------			-----------------
+Cutting and Pasting			Movement Commands
+-------------------			-----------------
+
+ yy	yank (copy) current line	H	move to top of screen 
+(high)
+ 5yy	yank 5 lines			M	move to middle
+ p	paste				L	move to low
+ P	paste above current position	10G	go to line 10
+					G	go to end of lines
+					gg	go to first line
+					w	go to next word
+					b	go back to previous word
+					0	beginning of line
+					$	end of line
+
+------------------
+Searching Commands
+------------------
+
+ /fred		search for "fred"
+ ?fred		search backwards for "fred"
+ n		find next match
+ N		find previous match
+
+---------------------
+Run External Commands
+---------------------
+
+ :!ls -al		list current directory (long list)
+ :!pwd			print working directory
+
+----------------------
+Substitute Commands
+----------------------
+ :s/F.*E/BA/		swap first (longest) F.*E with BA (current line 
+only)
+ :s/FRED/BARNEY/g	swap FRED with BARNEY (current line only)
+ :1,$s/FRED/BARNEY/g	swap every occurrence of FRED with BARNEY 
+(entire file)
+ :%s/FRED/BARNEY/g	swap FRED with BARNEY (find in all lines)
+			%s = 1,$s
+ :/co/s/FRED/BARNEY/g	in lines that contain "co", 
+			swap FRED with BARNEY (current line only)
+ :.+3s/FRED/BARNEY/g	swap FRED with BARNEY on current+3 line 
+			not work with %s directly
+ :+3s/FRED/BARNEY/g	same as .+3s
+ :10,20s/FRED/BARNEY/g	swap FRED with BARNEY on lines 10 through 20
+ http://www.guckes.net/vi/substitute.html
+
+----------------------
+Miscellaneous Commands
+----------------------
+ :w 			save current file 
+ :w /path/to/file	save current file to a different path
+ :r /path/to/file	read contents of a file into the current file
+ :10,20d		delete lines 10 through 20
+ :10,20y		yank (copy) lines 10 through 20 to the buffer
+
+----------------
+Auto-Indentation
+----------------
+
+Your ~/.exrc file is configured to automatically indent each line.  
+To move backwards (and eliminate indentation), switch to edit mode then 
+hit 
+
+^d

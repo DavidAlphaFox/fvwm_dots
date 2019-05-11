@@ -1,0 +1,21 @@
+#!/usr/bin/env mksh
+
+today="$( date +"%Y%m%d" )"
+number=0
+
+while [[ -f $HOME/Video/record_$today$count.mkv ]]
+do
+    (( ++number ))
+    count="$( printf -- '-%02d' "$number" )"
+done
+fname="$HOME/Video/record_$today$count.mkv"
+
+ffmpeg -y \
+    -thread_queue_size 1024 \
+    -f oss -i /dev/dsp4 -ac 2 \
+    -f x11grab -r 60 \
+    -s $(xdpyinfo | grep dimensions | awk '{print $2;}') \
+    -i :0.0 -c:v libx264rgb -crf 0 -preset ultrafast -c:a flac \
+$fname
+
+

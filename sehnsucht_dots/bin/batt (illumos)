@@ -1,0 +1,1 @@
+upower -i /org/freedesktop/UPower/devices/battery_acpi_drv_0_battery0 | grep -i percentage | awk '{print $2}'

@@ -1,0 +1,3 @@
+#!/bin/sh
+perl -pi -e "s/pref name='(list_visible|list_maximized)' type='bool' value='[1-9]'/pref name='\$1' type='bool' value='0'/gi" ~/.purple/prefs.xml
+pidgin &

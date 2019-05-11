@@ -1,0 +1,11 @@
+table Icon
+  Caption:   Seamonkey  
+  ToolTip.Caption: Web Browser  
+  Command: seamonkey 
+  Icon: /home/sehnsucht/.icons/BluecurveRH/36x36/apps/galeon.png
+  Width: 36 
+  Height: 36 
+  X: 25
+  Y: 279 
+end
+

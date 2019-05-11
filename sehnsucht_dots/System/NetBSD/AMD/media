@@ -1,0 +1,10 @@
+  /defaults    type:=program;fs:=${autodir}/${key};\
+               unmount:="/sbin/umount umount" 
+
+
+  cd           mount:="/sbin/mount mount -t cd9660 \
+                       /dev/cd0a ${fs}"
+  usb1         mount:="/sbin/mount mount -t msdos \
+                       /dev/sd0e ${fs}"
+  usb2         mount:="/sbin/mount mount -t msdos \
+                       /dev/sd1e ${fs}"

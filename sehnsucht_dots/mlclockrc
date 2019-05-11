@@ -1,0 +1,10 @@
+FORM1	= "(%a)%l:%M:%S%p"
+FORM2	= "(%a)%b-%d"
+EVENT	= FOCUS	; FOCUS or CLICK
+NEAR	= 10
+LOCALE	= "C"
+FONTSET	= "-*-*-medium-r-normal--12-*"
+HEAD	= 5
+FONTCOLOR = "blue"
+BACKCOLOR = "white"
+BOLD = FALSE   ; TRUE or FALSE

@@ -1,0 +1,3 @@
+#!/bin/sh
+MAME_EXEC=/usr/pkg/bin/mame
+/usr/pkg/java/openjdk8/bin/java -jar $HOME/.java/ia-rcade.jar "$@"

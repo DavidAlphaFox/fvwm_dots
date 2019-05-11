@@ -1,0 +1,71 @@
+
+# Set ${From:}
+personal-name=$NAME
+user-domain=gmail.com
+
+#SMTP server
+smtp-server=smtp.gmail.com:587/novalidate-cert/user=$USER/tls
+ 
+# NNTP server for posting news
+nntp-server=news.eternal-september.org
+
+# Path of IMAPS INBOX
+inbox-path={imap.gmail.com:993/novalidate-cert/user=$USER/ssl}inbox
+folder-collections=Gmail
+{imap.gmail.com:993/novalidate-cert/user=$USER/ssl}[]
+
+# Folders
+incoming-archive-folders=[Gmail]/Archive
+default-fcc=[Gmail]/Sent
+default-saved-msg-folder=[Gmail]/All Mail
+rsh-open-timeout=0
+disable-these-authenticators=GSSAPI
+postponed-folder=[Gmail]/Drafts
+
+# Signature
+signature-file=/home/sehnsucht/.signature
+
+# List of features; see Alpine's Setup/options menu for the current set.
+# e.g. feature-list= select-without-confirm, signature-at-bottom
+# Default condition for all of the features is no-.
+feature-list=enable-dot-folders,
+	     enable-incoming-folders,
+	     signature-at-bottom
+
+
+# Customized Header
+customized-hdrs=From: $NAME <$USER>
+
+# Sort messages in Index
+sort-key=Date/Reverse
+
+# External editor
+editor=vi
+
+# 78-N wrap margin
+composer-wrap-column=78
+
+# Specifies the program invoked by ^T in the Composer.
+speller=hunspell
+ 
+
+# Program to view images (e.g. GIF or TIFF attachments).
+image-viewer=xv
+
+
+# Full path and name of NEWSRC file
+newsrc-path=${HOME}/.newsrc
+
+# Directory containing system's news data.
+news-spool-directory=${HOME}/News
+
+# Downloads
+download-command=ftp
+default-directories=${HOME}/Downloads
+
+# Controls display of color
+color-style=force-xterm-256color
+
+
+
+

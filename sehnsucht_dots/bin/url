@@ -1,0 +1,21 @@
+# If no url given. Opens browser. For using script as $BROWSER.
+[ -z "$1" ] && { "$BROWSER"; exit; }
+
+case "$1" in
+	*mkv|*webm|*mp4|*avi|*youtube.com*|*youtu.be*|*soundcloud.com*)
+		mpv --input-ipc-server=/tmp/mpvsoc$(date +%s) -quiet "$1" >/dev/null 2>&1 & ;;
+	*png|*jpg|*jpe|*jpeg|*gif|*xpm|*ico)
+		xv  "$1" >/dev/null 2>&1 & ;;
+	*mp3|*wav|*ogg|*flac|*opus|*mp3?source*)
+		xine -B -p "$1" >/dev/null 2>&1 & ;;
+	ftp*|sftp*)
+		"$TERMINAL" -g 90x35 -e lftp "$1" >/dev/null 2>&1 & ;;
+	gopher*)
+		"$TERMINAL" -g 90x35 -e gopher "$1" >/dev/null 2>&1 &  ;;
+	news*|snews*)
+		"$TERMINAL" -g 90x35 -e slrn -h "$1" >/dev/null 2>&1 &  ;;
+			
+	*)
+		if [ -f "$1" ]; then "$TERMINAL" -e "$EDITOR $1"
+		else "$BROWSER" "$1" >/dev/null 2>&1 & fi ;;
+esac

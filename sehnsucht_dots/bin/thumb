@@ -1,0 +1,12 @@
+#!/bin/sh
+if [ $# -lt 2 ]
+then
+    echo "Usage: <quality (0 - 100)> <filenames>"
+    exit
+fi
+q=$1
+shift
+for arg
+do
+    convert -quality "$q" "$arg" "small_""$arg"
+done

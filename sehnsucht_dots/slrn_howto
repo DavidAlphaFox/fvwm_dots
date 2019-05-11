@@ -1,0 +1,331 @@
+#################### 
+# ~/.slrnrc 
+####################
+
+
+%----------------------------------------------
+% General account Settings
+%----------------------------------------------
+% -*- slang -*-
+
+set realname "$YOUR_NAME"
+set username "$USERID"
+set hostname "$YOUR_MAIL_PROVIDER"
+set replyto  "$NICKNAME <YOUR_EMAIL_ADDRESS>"
+
+
+%----------------------------------------------
+% As server requires authentication, 
+% add a nnrpaccess line for it
+%----------------------------------------------
+nnrpaccess "snews://orbitalfox.eu" "$USERID" "$PASSWORD"
+
+%----------------------------------------------
+% server-specific newsrc file
+%----------------------------------------------
+server "snews://orbitalfox.eu" ".newsrc_orbitalfox"
+
+%-----------------------------------------------
+% Force server to verify your authentication data
+%-----------------------------------------------
+set force_authentication 1 
+
+%-----------------------------------------------
+% Read  messages online &
+% Post Directly to the server
+%-----------------------------------------------
+set server_object "nntp"
+set post_object "nntp"
+
+
+%-----------------------------------------------
+% Leave Message-ID generation to your server if 
+% your system does not have a porperly qualified, 
+% unique hostname
+%-----------------------------------------------
+set generate_message_id 0 
+
+%-----------------------------------------------
+% Sort news by date with most recent first
+%-----------------------------------------------
+set new_subject_breaks_threads 8
+
+%-----------------------------------------------
+% Use msmtp instead of default sendmail as MTA
+% Note: change msmtp path depending on system's
+% packages install PREFIX
+%-----------------------------------------------
+set sendmail_command "/usr/pkg/bin/msmtp -t"
+
+%-----------------------------------------------
+% signature file
+%-----------------------------------------------
+set signature ".signature"
+
+%-----------------------------------------------
+% This is inserted when sending email CCs 
+%-----------------------------------------------
+set cc_post_string "[Carbon Copy of message posted to %n.]"
+
+%-----------------------------------------------
+% Encoding
+%-----------------------------------------------
+charset display "utf-8"
+charset outgoing "utf-8"
+%-----------------------------------------------
+% Editor command of choice
+%-----------------------------------------------
+set editor_command "vi -c 'set wp=72' +%d '%s'"
+
+%-----------------------------------------------
+% Abort posting or email operation if the file
+% was not modified by the editor
+%-----------------------------------------------
+set abort_unmodified_edits 1
+
+%-----------------------------------------------
+% WWW browser to use. Xbrowser is used when the 
+% $DISPLAY environment variable is set; 
+% non_Xbrowser otherwise
+%-----------------------------------------------
+set non_Xbrowser "w3m '%s'"
+set Xbrowser "seamonkey '%s' &"
+
+%-----------------------------------------------
+% make temporary files for postings, followups and
+% replies go in the directory specified by $TMPDIR, 
+% or /tmp if the former is unset
+%-----------------------------------------------
+set use_tmpdir 1
+
+%-----------------------------------------------
+% Directories where sent articles / email are archived.
+%-----------------------------------------------
+set save_posts "News/Posts"
+set save_replies "News/Replies"
+
+%-----------------------------------------------
+% Directory where postponed articles are placed
+%-----------------------------------------------
+set postpone_directory "News/Drafts"
+
+%-----------------------------------------------
+% Directory where all other files are saved
+%-----------------------------------------------
+set save_directory      "News/Misc"
+
+%-----------------------------------------------
+% Score file
+%-----------------------------------------------
+set scorefile               "News/score"
+
+%-----------------------------------------------
+% File where failed posts are appended
+%-----------------------------------------------
+set failed_posts_file "dead.message"
+
+%-----------------------------------------------
+% Enable mouse support on xterm/rxvt-unicode
+%-----------------------------------------------
+ set mouse 1
+ 
+%-----------------------------------------------
+% Draw a cursor bar similarly to tin instead of 
+% default slrn "->" cursor?
+%-----------------------------------------------
+set display_cursor_bar	1
+
+%-----------------------------------------------
+% Highlight urls and unread articles
+%-----------------------------------------------
+set highlight_urls 1
+set highlight_unread_subjects 1
+ 
+ 
+%-----------------------------------------------
+% Better Color Scheme
+%-----------------------------------------------
+
+color header_number     "green"         "white"
+color header_name       "green"         "white"
+color normal            "black"         "white"
+color error             "red"           "white"
+color status            "yellow"        "blue"
+color group             "blue"          "white"
+color article           "blue"          "white"
+color cursor            "brightgreen"   "white"
+color author            "magenta"       "white"
+color subject           "black"         "white"
+color headers           "brightcyan"    "white"
+color menu              "yellow"        "blue"
+color menu_press        "blue"          "yellow"
+color tree              "red"           "white"
+color quotes            "red"           "white"
+color thread_number     "blue"          "white"
+color high_score        "red"           "white"
+color signature         "red"           "white"
+color description       "blue"          "white"
+color tilde             "green"         "white"
+color response_char     "green"         "white"
+
+
+##########################################
+# ~/.msmtprc
+#########################################
+# Below we descrirbe 2 setups in order to cover 
+# both standard SMTPS and  MSA+STARTTLS,
+# depending on provider
+
+# Set default values for all following accounts.
+defaults
+auth           on
+tls            on
+tls_trust_file /etc/openssl/certs/ca-certificates.crt
+logfile        ~/.msmtp.log
+
+#Fastmail
+account        fastmail
+host           smtp.fastmail.com
+port           465
+from           $YOUR_FASTMAIL_ADDRESS
+user           $YOUR_FASTMAIL_ADDRESS
+password       $PASSWORD
+tls_starttls   off
+
+#Gmail
+account        gmail
+host           smtp.gmail.com
+port           587
+from           $YOUR_GMAIL_ADDRESS
+user           $YOUR_GMAIL_ADDRESS
+password       $PASSWORD
+tls_starttls   on
+
+account default : fastmail
+
+# IMPORTANT NOTES
+
+#1
+#'account default : ' whould match the e-mail 
+# address specified inside ~/.slrnrc
+# 'account default : ' needs to be placed at
+# the end of the file
+
+#2
+# change tls_trust_file path according to your
+# CA root or self-signed certificate location
+
+
+################################
+# Connecting for the first time
+################################
+
+1) Set the NNTPSERVER variable inside your shell 
+   configuration file and source it afterwards; e.g..:
+     - for sh/ksh/bash/zsh:
+       NNTPSERVER='snews://orbitalfox.eu' && export NNTPSERVER
+     - for csh/tcsh:
+       setenv NNTPSERVER 'snews://orbitalfox.eu'                 
+2) Create news dirs to store local file
+   % mkdir -pv ~/News/{Posts,Replies,Drafts,Misc}
+
+3) Create the server-specific newsrc file 
+   and adjust its permissions together with .slrnrc, 
+   otherwise slrn will report insecure connection
+   upon startup 
+   % touch ~/.newsrc_orbitalfox
+   % chmod 0600 !$
+   % chmod 0600 ~/.slrnrc 
+      
+3) Run: 
+   % slrn --create 
+   at your shell prompt to start slrn and retrieve a list 
+   of all active  newsgroups from the server
+4) Run:
+   % slrn -d 
+   at your shell prompt to retrieve newsgroups descriptions
+   
+5) Specify your signature by touching and editing ~/.signature
+
+6) Once connected, press 's' to subscribe to newsgroups   
+
+
+
+
+
+
+#################################################
+#                   OPTIONAL 
+#     Use slrnpull to mirror orbitalfox.eu
+#  news to a local spool dir for off line reading
+##################################################
+
+1) Install slrnpull (Disclaimer: may be included inside your 
+                     distributions' slrn package already)
+
+2) Create a suitable spool dir
+     % mkdir -pv ~/News/Spool/news
+     % touch ~/News/spool/log 
+3) Enable authentication
+     % cat > ~/News/Spool/authinfo << EOF
+       > $USERID
+       > $PASSWORD
+       > EOF
+     % chmod 0600 !$
+     
+4) Use a script to easily fetch headers/news from orbitalfox.eu
+   on demand (optionally set up a cron job to invoke it)
+    
+     - Create a ~/.bin/slrnpull.sh script with the following content,
+       making sure to appropriately adjust slrnpull's binary path 
+     
+    #!/bin/sh
+    umask 022
+    DIR=${HOME}/News/Spool
+    SERVER=snews://orbitalfox.eu"  
+    SLRNPULL=/usr/pkg/bin/bin/slrnpull
+    LOG=log
+    $SLRNPULL -h $SERVER -d $DIR --logfile $LOG
+    
+    - Make it executable
+      chmod +x ~/.bin/slrn.sh
+    
+5) Edit a  ~/News/Spool/slrnpull.conf file; 
+   the default slrnpull.conf syntax is as easy as follows:
+   
+   <NEWSGROUP_NAME>  <MAX_ARTICLES_TO_RETRIEVE> <NUMBER_OF_DAYS_BEFORE_EXPIRE>
+ 
+   For example, the defaults are:
+   
+     orbitalfox.comp    20     14
+   
+   which indicates a default value of 20 articles to be 
+   retrieved from the   server and that such an article 
+   will expire after 14 days, and shall be expunged no 
+   sooner will the 'slrnpull --expire' command be first
+   executed by the user
+   
+   
+   A third boolean (0/1) value can be added; if turned on
+   it will enable fetching headers only, e.g., to only 
+   fetch comp headers
+    
+     orbitalfox.comp    20     14    1
+ 
+
+6) Now, inside ~/.slrnrc
+
+%-------------------------------------------------
+%  Local spool configuration
+%-------------------------------------------------
+set spool_inn_root      "News/Spool"
+set spool_root          "News/Spool/news"
+set spool_nov_root      "News/Spool/news"
+set read_active         1
+set use_slrnpull        1
+set post_object         "slrnpull"
+set server_object       "spool"
+
+7) Execute slrnpull.sh (will pull the specified number of news
+   from the specified newgroups, according to slrnpull.conf); 
+   append '--expire' option to purge the spool dir from old news 

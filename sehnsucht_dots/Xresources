@@ -1,0 +1,269 @@
+!#/bin/sh
+
+! ===== General ====
+Xft*dpi:	96
+Xft*autohint:	0
+Xft*antialias:	1
+Xft*hinting:	1
+Xft*rgba: 	rgb
+Xft*hintstyle: 	hintslight
+Xft*lcdfilter:  lcddefault 
+*font:     	-adobe-courier-medium-r-normal--12-120-75-75-m-70-iso10646-1
+*fontList: 	-adobe-courier-medium-r-normal--12-120-75-75-m-70-iso10646-1
+
+
+! ===== Colors ====
+*.foreground:   #2f2f4a
+*.background:   #afadbf
+*.cursorColor:  #1c2027
+*.color0:       #192033
+*.color8:       #666666
+*.color1:       #a62a3e
+*.color9:       #f04758
+*.color2:       #38912b
+*.color10:      #93c724
+*.color3:       #b27d12
+*.color11:      #ddb62b
+*.color4:       #355c9a
+*.color12:      #45a3e6
+*.color5:       #7c4f9f
+*.color13:      #c953ef
+*.color6:       #258f8f
+*.color14:      #60c6c8
+*.color7:       #77858c
+*.color15:      #c0c0c0
+
+
+! ===== Cursor ====
+Xcursor*theme: 	cz-Viator
+Xcursor*size: 	16
+
+
+! ===== URxvt ====
+! general
+URxvt*termName: 	rxvt-unicode-256color
+URxvt*geometry: 	85x28
+URxvt*foreground: 	#ffffff 
+URxvt*cursorColor: 	#ffffff
+URxvt*cursorBlink: 	true
+URxvt*internalBorder: 	5
+URxvt*externalBorder: 	0
+URxvt*loginShell:  	true
+URxvt*locale: 		true
+URxvt*utf8: 		true
+URxvt*iso14755: 	false
+URxvt*preeditType: 	Root
+URxvt*altSendsEscape: 	true
+URxvt*eightBitInput: 	false
+URxvt*metaSendsEscape: 	true
+URxvt*utmpInhibit: 	false
+URxvt*scrollBar: 	false
+URxvt*secondaryScroll:  true
+URxvt*buffered: 	true
+URxvt*urgentOnBell: 	true
+URxvt*visualBell:   	true
+URxvt*mapAlert: 	true
+URxvt*transparent: 	true 
+URxvt*renderFont: 	True
+URxvt*underlineColor: 	magenta
+URxvt*colorUL: 		magenta
+URxvt*shading: 		25
+URxvt*fading: 		0
+URxvt*depth: 		32
+URxvt*intensityStyles: 	true
+URxvt*secondaryScreen: 	1
+URxvt*scrollTtyOutput: 	false
+URxvt*scrollWithBuffer: true
+URxvt*scrollTtyKeypress: true
+URxvt*print-pipe:  	cat > $HOME/.urxvt/$(echo URxvt*.dump.$(date +'%Y%M%d%H%m%S'))
+URxvt**saveLines: 	16384
+! copy and paste $XA_CLIPBOARD
+URxvt*clipboard.copycmd:  xclip -in -sel clip
+URxvt*clipboard.pastecmd: xclip -out -sel clip
+! fonts
+URxvt*font: 		xft:Terminus\ (TTF):medium:size=10
+URxvt*boldFont: 	xft:Terminus\ (TTF):bold:size=10
+URxvt*italicFont: 	xft:Terminus\ (TTF):italic:size=10
+URxvt*boldItalicFont: 	xft:Terminus\ (TTF):italic:bold:size=10
+URxvt*letterSpace: 	-1
+
+! extensions
+URxvt*perl-lib: 	$HOME/.urxvt/perl
+URxvt*perl-ext-common: default,matcher,clipboard,keyboard-select,url-select,font-size,fullscreen,vtwheel
+URxvt*charClass:		33:48,35:48,37:48,43:48,45-47:48,64:48,95:48,126:48
+URxvt*url-select.launcher:  seamonkey 
+URxvt*url-select.underline: true
+URxvt*url-select.autocopy:  true
+URxvt*url-select.button:    1
+URxvt*matcher.button: 	    1
+URxvt*keysym.M-u: 	perl:url-select:select_next
+URxvt*keysym.M-c: 	perl:clipboard:copy
+URxvt**keysym.M-v: 	perl:clipboard:paste
+URxvt*keysym.M-Up: 	perl:font-size:increase
+URxvt*keysym.M-Down: 	perl:font-size:decrease
+URxvt*keysym.M-C-Up: 	perl:font-size:incglobal
+URxvt*keysym.M-C-Down: 	perl:font-size:decglobal
+URxvt*keysym.M-equal: 	perl:font-size:reset
+URxvt*keysym.M-slash: 	perl:font-size:show
+URxvt*keysym.M-a: 	perl:keyboard-select:activate
+URxvt*keysym.M-s: 	perl:keyboard-select:search
+URxvt*keysym.F11: 	perl:fullscreen:switch
+URxvt*tabbed.new-button: false
+URxvt*tabbed.tabbar-fg: 7
+URxvt*tabbed.tabbar-bg: 0
+URxvt*tabbed.tab-fg: 	7
+URxvt*tabbed.tab-bg: 	5
+URxvt*tabbed.tabcmds.1: N|mksh
+URxvt*tabbed.tabcmds.2: R|root|su -
+URxvt*tabbed.tabcmds.3: F|nnn|nnn
+URxvt*tabbed.tabcmds.4: E|vi|vi
+URxvt*tabbed.tabcmds.5: M|mutt|neomutt
+URxvt*tabbed.tabcmds.6: H|htop|htop
+URxvt*session: 		N
+
+
+! ===== Xterm ====
+xterm*vt100*geometry: 		75x25
+xterm*locale:	      		true
+xterm*utf8: 	      		true
+xterm*utf8Title:      		true
+xterm*borderWidth: 		0
+xterm*internalBorder: 		2
+xterm*allowBoldFonts: 		false
+xterm*background:               #dee2ef
+xterm*fontMenu*fontdefault*Label: Default
+xterm*fontMenu*font2*Label:  	Tiny
+xterm*vt100.font2:           	5x7
+xterm*vt100.utf8Fonts.font2:	-misc-fixed-medium-r-normal-*-8-*-*-*-*-*-iso10646-1
+xterm*vt100.utf8Fonts.font:	-misc-fixed-medium-r-semicondensed-*-11-*-*-*-*-*-iso10646-1
+XTerm*vt100.faceName:	-misc-fixed-medium-r-semicondensed-*-11-*-*-*-*-*-iso10646-1
+XTerm*vt100.faceSize: 		8
+xterm*saveLines: 		16384
+xterm*loginShell: 		true
+XTerm*charClass:		33:48,36-47:48,58-59:48,61:48,63-64:48,95:48,126:48
+XTerm*on2Clicks: 		word
+XTerm*on3Clicks: 		line
+xerm*termName: 			xterm-256color
+xterm*eightBitInput: 		false
+xterm*rightScrollBar: 		false
+xterm*ScrollBar: 		false
+xterm*scrollTtyOutput: 		true
+xterm*scrollKey: 		true
+xterm*loginshell: 		true
+xterm*maximized: 		false
+xterm*vt100.metaSendsEscape: 	true
+xterm*vt100.Translations: #override \
+    Alt <KeyPress> minus: smaller-vt-font() \n\
+    Alt <KeyPress> plus: larger-vt-font() \n\
+		<Btn1Up>: select-end(CLIPBOARD,PRIMARY,CUT_BUFFER0) \n\
+    Alt <KeyPress> V: insert-selection(CLIPBOARD,PRIMARY,CUT_BUFFER0)
+
+
+! ===== XOsview ====
+xosview*title: 		XOSview 
+xosview*font: 		6x9
+xosview*wireless: 	false
+xosview*net: 		false
+xosview*coretemp: 	false
+xosview*bsdsensor: 	false
+xosview*int: 		true
+xosview*disk: 		false
+xosview*page: 		false
+xosview*battery: 	false
+xosview*gfx: 		false
+xosview*labels: 	true
+xosview*cpuFormat: 	single
+xosview*background: 	#2f2f4a
+
+
+! ===== XLock ====
+XLock*dpmsoff: 		1
+XLock*description: 	on 
+XLock*echokeys: 	off 
+XLock*info: 		"screen is locked" 
+XLock*mode:             matrix      
+XLock*username: 	username: 
+XLock*password: 	password: 
+XLock*font: 		-misc-fixed-medium-r-semicondensed-*-13-*-*-*-*-*-iso10646-1
+XLock*planfont:		-misc-fixed-medium-r-semicondensed-*-13-*-*-*-*-*-iso10646-1
+XLock*messagefont:		-misc-fixed-medium-r-semicondensed-*-13-*-*-*-*-*-iso10646-1
+XLock*fontset:		-misc-fixed-medium-r-semicondensed-*-13-*-*-*-*-*-iso10646-1
+XLock*planfontset:		-misc-fixed-medium-r-semicondensed-*-13-*-*-*-*-*-iso10646-1
+XLock*fpsfont: 	-misc-fixed-medium-r-semicondensed-*-13-*-*-*-*-*-iso10646-1
+
+! ===== XClock ====
+XClock*analog: 		false
+XClock*twentyfour: 	true
+XClock*padding: 	0
+XClock*geometry: 	-2-2
+XClock*render: 		false
+XClock*font: 		-misc-fixed-bold-r-normal-*-12-*-*-*-*-*-iso10646-1
+XClock*height: 		12
+XClock*background: 	#2f2f4a
+XClock*foreground: 	white
+XClock*borderWidth: 	0
+
+
+! ===== NEdit ====
+NEdit*font:	-adobe-courier-medium-r-normal--12-120-75-75-m-70-iso10646-1
+
+
+! ===== Xpdf ====
+Xpdf*Background:    #afadbf
+Xpdf*Foreground:    #2f2f4a
+Xpdf*fontList:      -adobe-courier-bold-r-normal--13-*-*-*-m-*-iso10646-1
+Xpdf*toolTipEnable: true
+Xpdf*textEncoding:  utf8
+Xpdf*textEOL:       unix
+
+
+! ===== XScreenSaver ====
+!general
+xscreensaver.timeout: 			0:10:00
+xscreensaver.cycle: 			0:08:00
+xscreensaver.lock: 			True
+xscreensaver.lockTimeout: 		0:10:00
+xscreensaver.passwdTimeout: 		0:00:30
+xscreensaver.dateFormat: 		%I:%M %p, %a %b %d
+xscreensaver.visualID: 			default
+xscreensaver.installColormap:    	True
+xscreensaver.verbose: 			False
+xscreensaver.timestamp: 		True
+xscreensaver.splash: 			False
+xscreensaver.demoCommand: 		xscreensaver-demo
+xscreensaver.prefsCommand: 		xscreensaver-demo -prefs
+xscreensaver.nice: 			10
+xscreensaver.memoryLimit: 		0
+xscreensaver.fade: 			True
+xscreensaver.unfade: 			False
+xscreensaver.fadeSeconds: 		0:00:05
+xscreensaver.fadeTicks: 		20
+xscreensaver.captureStderr: 		True
+xscreensaver.ignoreUninstalledPrograms: True
+xscreensaver.dpmsEnabled: 		True
+xscreensaver.dpmsQuickOff: 		False
+!font settings
+xscreensaver.Dialog.headingFont:		-adobe-courier-medium-r-normal--12-*-*-*-m-*-iso10646-1
+xscreensaver.Dialog.bodyFont:		-adobe-courier-medium-r-normal--12-*-*-*-m-*-iso10646-1
+xscreensaver.Dialog.labelFont:		-adobe-courier-medium-r-normal--12-*-*-*-m-*-iso10646-1
+xscreensaver.Dialog.unameFont:		-adobe-courier-bold-r-normal--12-*-*-*-m-*-iso10646-1
+xscreensaver.Dialog.buttonFont:		-adobe-courier-bold-r-normal--12-*-*-*-m-*-iso10646-1
+xscreensaver.Dialog.dateFont:		-adobe-courier-medium-r-normal--12-*-*-*-m-*-iso10646-1
+xscreensaver.passwd.passwdFont:		-adobe-courier-medium-r-normal--12-*-*-*-m-*-iso10646-1
+!colors
+xscreensaver.Dialog.foreground: 	    #ffffff
+xscreensaver.Dialog.background: 	    #424242
+xscreensaver.Dialog.topShadowColor: 	    #424242
+xscreensaver.Dialog.bottomShadowColor: 	    #424242
+xscreensaver.Dialog.Button.foreground: 	    #B22222
+xscreensaver.Dialog.Button.background: 	    #ffffff
+xscreensaver.Dialog.text.foreground: 	    #B22222
+xscreensaver.Dialog.text.background: 	    #ffffff
+xscreensaver.Dialog.internalBorderWidth:    24
+xscreensaver.Dialog.borderWidth: 	    1
+xscreensaver.Dialog.shadowThickness: 	    2
+xscreensaver.passwd.thermometer.foreground: #B22222
+xscreensaver.passwd.thermometer.background: #000000
+xscreensaver.passwd.thermometer.width: 	    12
+
+

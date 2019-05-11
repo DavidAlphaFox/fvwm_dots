@@ -1,0 +1,25 @@
+#!/bin/sh
+
+NETBSD_PORTS="/usr/pkgsrc"
+FREEBSD_PORTS="/usr/ports"
+
+if [ `uname -s` == "NetBSD" ];
+  then
+  if [ -e "/usr/pkg/bin/$1" ];
+    then
+    find $NETBSD_PORTS -name $1 -exec make reinstall clean -C {} \;
+  else
+    find $NETBSD_PORTS -name $1 -exec make install clean -C {} \;
+  fi
+
+elif [ `uname -s` == "FreeBSD" ];
+  then
+ if [ -e "/usr/local/bin/$1" ]; 
+    then
+    PORTNAME=`pkg which -oq /usr/local/bin/$1`
+    make reinstall clean -C "${FREEBSD_PORTS}/${PORTNAME}" 
+  else
+    find $FREEBSD_PORTS -name $1 -exec make install clean -C {} \;
+  fi
+fi
+

@@ -1,0 +1,6 @@
+host = 127.0.0.1
+port=6600
+enable-mouse = no
+welcome-screen-list = yes
+list-format = "%file%"
+enable-colors = yes

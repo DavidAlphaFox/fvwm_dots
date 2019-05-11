@@ -1,0 +1,10 @@
+ #!/bin/sh
+ PATH=$PATH:/usr/pkg/bin; export PATH
+ raw="/tmp/xdm.xwd"
+ shot="/tmp/xdm.png"
+ sleep 10
+ xwd -root -out $raw
+ if [ -e $raw ] 
+    then convert $raw $shot
+ fi
+

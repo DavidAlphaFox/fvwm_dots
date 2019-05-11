@@ -1,0 +1,36 @@
+#!/bin/sh
+
+export LANG="en_US.UTF-8"
+export CHARSET=UTF-8
+export LC_CTYPE="en_US.UTF-8"
+env > ~/.xenv
+
+setxkbmap \
+  -model pc105 \
+  -layout "us,it" \
+  -variant altgr-intl \
+  -option compose:ralt \
+  -option grp_led:caps \
+  -option terminate:ctrl_alt_bksp
+
+xset s off -dpms 
+xset b 0
+xset m 55/20 4
+xset +fp "$X_FONTPATH"
+xset fp rehash
+xhost +local: 
+xmodmap $HOME/.xmodmaprc
+unclutter -root -onescreen &
+osdmixer 48 48 4 1 &
+autocutsel &                                                                  
+numlockx on &
+xidle -timeout 600 &
+urxvtd -q -o -f & 
+xrdb $HOME/.Xresources
+if [ -d /etc/X11/xinit/xinitrc.d ]; then
+  for f in /etc/X11/xinit/xinitrc.d/*; do
+    [ -x "$f" ] && . "$f"
+  done
+  unset f
+fi
+exec fvwm2

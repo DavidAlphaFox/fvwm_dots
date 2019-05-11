@@ -1,0 +1,11 @@
+table Icon
+  Caption:   Xterm  
+  ToolTip.Caption: Terminal Emulator  
+  Command: xterm 
+  Icon: /home/sehnsucht/.icons/BluecurveRH/36x36/apps/gnome-color-xterm.png
+  Width: 36 
+  Height: 36 
+  X: 19
+  Y: 191
+end
+

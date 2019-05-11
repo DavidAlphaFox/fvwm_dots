@@ -1,0 +1,11 @@
+table Icon
+  Caption:   PcmanFM  
+  ToolTip.Caption: File Manager
+  Command: pcmanfm /home/sehnsucht 
+  Icon: /home/sehnsucht/.icons/BluecurveRH/36x36/apps/file-manager.png
+  Width: 36 
+  Height: 36 
+  X: 29
+  Y: 21
+end
+

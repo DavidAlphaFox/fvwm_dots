@@ -1,0 +1,11 @@
+#!/bin/sh
+
+ vol() {
+getvol() { audioctl show-control volume | awk '/^volume/ { print $2 }'; }
+printf "%s: " "Volume"
+if [ -n "$1" ]; then
+printf "%s => " "$(getvol)"
+audioctl set-control volume "$1"
+fi
+printf "%sn" "$(getvol)"
+}

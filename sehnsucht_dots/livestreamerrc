@@ -1,0 +1,9 @@
+player=mpv --cache 2048
+player-no-close
+rtmpdump=/usr/local/bin/rtmpdump
+player-continuous-http
+loglevel=info
+hls-segment-threads=4
+hls-live-edge=1
+hls-timeout=5
+retry-streams 5

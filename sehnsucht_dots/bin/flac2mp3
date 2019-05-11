@@ -1,0 +1,7 @@
+#!/bin/sh
+
+for song in *.flac;
+  do title=`echo "${song%.*}"`;
+  echo $title;
+  ffmpeg -i "$song" "${title}.mp3";
+done

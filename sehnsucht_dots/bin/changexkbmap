@@ -1,0 +1,13 @@
+#!/bin/sh
+layout=`setxkbmap -query | sed -rn 's/layout.*(..)/\1/p'`
+case $layout in
+    us)
+    setxkbmap it
+    pgrep -x dunst >/dev/null && notify-send -i kxkb -u low "[Layout] Italian"
+    ;;
+
+    it)
+    setxkbmap us
+    pgrep -x dunst >/dev/null && notify-send -i kxkb -u low "[Layout] English"
+    ;;
+esac

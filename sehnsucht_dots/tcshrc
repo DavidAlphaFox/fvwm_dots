@@ -1,0 +1,297 @@
+umask 002
+
+
+alias libressl /usr/local/bin/openssl
+alias df   df -H
+alias h       history 25
+alias j       jobs -l
+alias ls   ls -FG
+alias la   ls -aF
+alias lf   ls -FA
+alias ll   ls -lAF
+if ( -x /usr/local/bin/vim ) then
+        alias vi        vim
+endif
+
+
+switch ($tty)
+  case "ttyv*":
+    alias precmd /usr/sbin/kbdcontrol -r fast
+endsw
+
+
+if ($tty =~ ttyv*) then
+	setenv    BROWSER       w3m
+else
+        setenv    BROWSER       uzbl-tabbed
+	
+setenv    EDITOR           vim
+endif
+
+bindkey "\e[3~" delete-char
+bindkey "\e[1~" beginning-of-line
+
+
+if ($?prompt) then
+   
+
+   set autoexpand
+   set colorcat
+   set filec
+   set ignoreof
+   set autocorrect
+   set nobeep
+   set filec
+   set rmstart
+   set correct    = cmd
+   set grey    = "%{\033[1;30m%}"
+   set red    = "%{\033[1;31m%}"
+   set green    = "%{\033[1;32m%}"
+   set yellow    = "%{\033[1;33m%}"
+   set blue    = "%{\033[1;34m%}"
+   set magenta    = "%{\033[1;35m%}"
+   set cyan    = "%{\033[1;36m%}"
+   set white    = "%{\033[1;37m%}"
+   set end    = "%{\033[0m%}"
+   set histfile = "$HOME/.history"
+   set savehist = (5000 merge)
+   set history = (5000 "%h %D-%W-%Y %T %R\n")   
+
+
+        complete {,un}alias     'p/1/a/' 'p/2/c/'
+	complete {c,push,pop}d  'C/*/d/'
+	complete exec           'p/1/c/'
+	complete man            'C/*/c/'
+	complete {where,which}  'C/*/c/'
+	complete {,un}set       'p/1/s/'
+	complete {,un}setenv    'C/*/e/'
+	complete printenv       'C/*/e/'
+	complete bindkey        'p/1/b/'
+	complete fg             'c/%/j/'
+	complete kill           'c/%/j/' 'c/-/S/'
+	complete chgrp          'p/1/g/'
+	complete chown          'p/1/u/'
+	complete limit          'C/*/l/'
+	complete find           'p/1/d/' 'n/-user/u/' 'n/-group/g/'
+	complete service        'n@*@`ls /etc/rc.d /usr/local/etc/rc.d | sed -e "/:/d"`@'
+	complete pkill          'n@*@`ps -a -x -c -o command="" | sort | uniq`@'
+	complete pkg_delete     'c/-/(i v D n p d f G x X r)/' \
+        			'n@*@`ls /var/db/pkg`@'
+	complete portmaster     'c/-/(C G H K B b g n t v w f i D d m x P PP)/' \
+                        	'n@*@`ls /var/db/pkg`@'
+	complete portupgrade    'c/-/(A b B c C D e f F i k l L m M n N o O p P PP q r R s S u v w W x y)/' \
+                       	        'n@*@`ls /var/db/pkg`@'
+
+	complete make           'n@*@`make -pn | sed -n -E "/^[#_.\/[:blank:]]+/d; /=/d; s/[[:blank:]]*:.*//gp;"`@'
+	complete git \
+  'p/1/(add commit rm status diff push pull)/' \
+  'n@diff@`git status -s | sed -n "/^ M/ s,^ M ,,p"`@' \
+  'n@add@`git status -s | sed -n "/^??/ s,^?? ,,p"`@' \
+  'n@commit@`git status -s | sed -n "/^[A ]/ s,^...,,p" ; echo .`@' \
+  'n@push@`git remote`@'
+
+
+complete cd \
+  'p/1/d/'
+
+complete chown \
+  'p/1/u/'
+
+complete complete \
+  'p/1/X/'
+
+complete dd \
+  'c/[io]f=/f/ n/*/"(if of ibs obs bs skip seek count)"/='
+
+complete doas \
+  'p@1@`sed "s,.*cmd *\([^ ]*\).*,\1," /usr/local/etc/doas.conf`@'
+
+complete find \
+  'n/-fstype/"(nfs 4.2)"/' 'n/-name/f/' \
+  'n/-type/(c b d f p l s)/' \
+  'n/-user/u/ n/-group/g/' \
+  'n/-exec/c/' 'n/-ok/c/' \
+  'n/-cpio/f/' \
+  'n/-ncpio/f/' \
+  'n/-newer/f/' \
+  'c/-/(fstype name perm prune type user nouser group nogroup size inum atime mtime ctime exec \
+    ok print ls cpio ncpio newer xdev depth daystart follow maxdepth mindepth noleaf version \
+    anewer cnewer amin cmin mmin true false uid gid ilname iname ipath iregex links lname empty path \
+    regex used xtype fprint fprint0 fprintf print0 printf not a and o or)/' \
+  'n/*/d/'
+
+complete gpart \
+  'p/1/(add backup bootcode commit create delete destroy modify recover resize restore set show undo unset)/' \
+  'n/add/x:-t type [-a alignment] [-b start] [-s size] [-i index] [-l label] -f flags geom/' \
+  'n/backup/x:geom/' \
+  'n/bootcode/x:[-b bootcode] [-p partcode -i index] [-f flags] geom/' \
+  'n/commit/x:geom/' \
+  'n/create/x:-s scheme [-n entries] [-f flags] provider/' \
+  'n/delete/x:-i index [-f flags] geom/' \
+  'n/destroy/x:[-F] [-f flags] geom/' \
+  'n/modify/x:-i index [-l label] [-t type] [-f flags] geom/' \
+  'n/recover/x:[-f flags] geom/' \
+  'n/resize/x:-i index [-a alignment] [-s size] [-f flags] geom/' \
+  'n/restore/x:[-lF] [-f flags] provider [...]/' \
+  'n/set/x:-a attrib -i index [-f flags] geom/' \
+  'n/show/x:[-l | -r] [-p] [geom ...]/' \
+  'n/undo/x:geom/' \
+  'n/unset/x:-a attrib -i index [-f flags] geom/'
+
+complete grep \
+  'c/-*A/x:<#_lines_after>/' \
+  'c/-*B/x:<#_lines_before>/' \
+  'c/--/(extended-regexp fixed-regexp basic-regexp regexp file ignore-case word-regexp line-regexp \
+    no-messages revert-match version help byte-offset line-number with-filename no-filename quiet silent \
+    text directories recursive files-without-match files-with-matches count before-context after-context \
+    context binary unix-byte-offsets)/' \
+  'c/-/(A a B b C c d E e F f G H h i L l n q r s U u V v w x)/' \
+  'p/1/x:<limited_regular_expression>/ N/-*e/f/' \
+  'n/-*e/x:<limited_regular_expression>/' \
+  'n/-*f/f/' \
+  'n/*/f/'
+
+complete herbstclient \
+  'p/*/`set cmd="${COMMAND_LINE}x"; \
+    set cmd=( ${cmd:s,herbstclient,,} ); \
+    set cmd_nr=${#cmd} ; \
+    @ cmd_nr-- ; \
+    herbstclient complete_shell ${cmd_nr} ${COMMAND_LINE:s,herbstclient,,}`/'
+
+complete ifconfig \
+  'p@1@`ifconfig -l`@' \
+  'n/*/(range phase link netmask mtu vlandev vlan metric mediaopt down delete broadcast arp debug)/' \
+  'c/%/j/' \
+  'n/*/`ps -ax | awk '"'"'{print $1}'"'"'`/'
+
+complete kill \
+  'c/-/S/' \
+  'c/%/j/' \
+  'n/*/`ps -ax | awk '"'"'{print $1}'"'"'`/'
+
+complete killall \
+  'c/-/S/' \
+  'c/%/j/' \
+  'n/*/`ps -ax | awk '"'"'{print $5}'"'"'`/'
+
+complete kldload \
+  'n@*@`ls -1 /boot/modules/ /boot/kernel/ | awk -F/ \$NF\ \~\ \".ko\"\ \{sub\(\/\.ko\/,\"\",\$NF\)\;print\ \$NF\}`@'
+
+complete kldunload \
+  'n@*@`kldstat | awk \{sub\(\/\.ko\/,\"\",\$NF\)\;print\ \$NF\} | grep -v Name`@'
+
+complete localc \
+  'p/*/f:*.{xls,xlsx}/'
+
+complete lowriter \
+  'p/*/f:*.{doc,docx}/'
+
+complete make \
+  'p@1@`make -V.ALLTARGETS`@'
+
+complete man \
+  'C@*@`find ${mandir} -type f -name \*.gz | sed "s,.*/,, ; s,\.[^\.]*\.gz,,"`@'
+
+complete mupdf \
+  "p/*/f:*.pdf}/"
+
+complete pdflatex \
+  'p/*/f:*.tex/'
+
+complete service \
+  'c/-/(e l r v)/' \
+  'p/1/`service -l`/' \
+  'n/*/(start stop reload restart status rcvar onestart onestop)/'
+
+complete sysctl \
+  'n/*/`sysctl -Na`/'
+
+complete tmux \
+  'n/*/(attach detach has kill-server kill-session lsc lscm ls lockc locks new refresh rename showmsgs source start suspendc switchc)/'
+
+set _task_date="modified.after:2016-01-01"
+complete task \
+  'c/pri:/(L M H)/' \
+  'c/project:/`task ${_task_date} _unique project`/' \
+  'n/[0-9]*/(annotate edit modify done)/' \
+  'p/2-/(project pri due)/:/' \
+  'p/1/`echo add list ; task _unique id`/'
+
+complete unrar \
+  'p/*/f:*.rar/'
+
+complete unzip \
+  'p/*/f:*.zip/'
+
+complete which \
+  'C/*/c/'
+
+
+alias _comp_pkgs 'pkg info -q'
+alias _comp_pkg_info '_comp_pkgs | xargs echo --list-files --pkg-message --comment --dependencies --required-by --size'
+alias _comp_pkg_install 'sqlite3 /var/db/pkg/repo-FreeBSD.sqlite "select name from packages;"'
+
+complete pkg \
+  'p/1/(annotate autoremove delete info install iv rquery ri rv rw query search uv ur which)/' \
+  'n/info/`_comp_pkg_info`/' \
+  'N/info/`_comp_pkgs`/' \
+  'n/delete/`_comp_pkgs`/' \
+  'n/install/`_comp_pkg_install`/' \
+  'n/rv/`pkg rquery "%n" | uniq`/' \
+  'n/ri/`pkg rquery "%n" | uniq`/' \
+  'n/rw/`pkg rquery "%n" | uniq`/' \
+   
+
+       if ($tty =~ ttyv*) then
+
+           if ( $USER == root ) then
+               set prompt = "\n${blue}%~ ${red}%N@%m: \n>>>${end} "
+           else
+               set prompt = "\n${red}%~ ${blue}%m: \n>>>${end} "
+           endif
+
+       else
+
+           if ( $USER == root ) then
+               set prompt = "\n${blue}%~ ${red}%N@%m: \n❱❱❱${end} "
+           else
+               set prompt = "\n${red}%~ ${green}%N@%m: \n❱❱❱${end} "
+           endif
+
+       endif
+
+   unset grey red green yellow blue magenta cyan white end
+   
+       if (-f ~/.colors) then
+		alias ls 'ls-F'
+		set listflags='ha'
+		set color
+		setenv LS_COLORS `awk '! /^#|^$|\t/ {printf $1"="$2":"}' ~/.colors`
+      endif
+ 
+   
+   
+   if ( $?tcsh ) then
+           bindkey "^[Od"       backward-word       # rxvt
+           bindkey "^[Oc"       forward-word       # rxvt
+           bindkey   "\e[2~"       overwrite-mode
+           bindkey   "\e[3~"       delete-char
+           bindkey   "\e[1;5C"   forward-word
+           bindkey   "\e[1;5D"   backward-word
+           bindkey   "\e[5~"       history-search-backward
+           bindkey   "\e[6~"       history-search-forward
+           bindkey   "^W"       backward-delete-word
+	   bindkey   "\e[3~"     delete-char
+	   bindkey   "\e[1~"      beginning-of-line
+	   
+
+   endif
+ 
+endif
+ 
+
+
+ 
+
+
+

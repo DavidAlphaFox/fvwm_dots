@@ -1,0 +1,9 @@
+/defaults    type:=program;fs:=${autodir}/auto/${key}; \
+             unmount:="/root/bin/umount_notif umount ${fs}";addopts:=utimeout=3
+           
+
+
+usb1     mount:="/root/bin/mount_notif mount -t msdos \
+             -o-l,-m=644,-M=755,-u=10040,-g=10001,-Dcp866,-Lcp1251 \
+             /dev/sd0e ${fs}"	 
+

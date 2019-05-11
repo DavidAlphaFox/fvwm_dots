@@ -1,0 +1,44 @@
+
+[BlurScope]
+color=16766527
+
+[audacious]
+advance_on_delete=TRUE
+filepopup_showprogressbar=TRUE
+generic_title_format=${?artist:${artist} - }${title}
+show_numbers_in_pl=TRUE
+use_file_cover=TRUE
+
+[audgui]
+filebrowser_win=1014,194,672,480
+info_win=30,60,596,334
+playlist_import_win=1076,0,720,540
+
+[gtkui]
+column_widths=10,275,175,10,175,175,10,100,36,10,275,275,275,10,275
+player_x=646
+player_y=310
+
+[gtkui-layout]
+item_count=0
+
+[search-tool]
+path=/usr/home/edmond/Music
+
+[skins]
+mainwin_font=Terminus (TTF) Medium 9
+player_x=128
+player_y=206
+playlist_font=Terminus (TTF) Medium 8
+playlist_visible=TRUE
+playlist_x=128
+playlist_y=322
+skin=/usr/local/share/audacious/Skins/arctic_Xmms.wsz
+
+[skins-layout]
+albumart=776,147,288,192
+blur_scope=1213,75,288,192
+cairo-spectrum=1172,241,288,192
+lyricwiki=1569,134,283,641
+playlist-manager=1172,241,288,192
+search-tool=917,454,288,192

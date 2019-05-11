@@ -1,0 +1,11 @@
+table Icon
+  Caption:   Audacious  
+  ToolTip.Caption: X Multimedia System  
+  Command: audacious 
+  Icon: /home/sehnsucht/.icons/BluecurveRH/36x36/apps/xmms.png
+  Width: 36 
+  Height: 36 
+  X: 25
+  Y: 365 
+end
+

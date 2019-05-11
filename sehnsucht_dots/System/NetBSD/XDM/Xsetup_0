@@ -1,0 +1,19 @@
+#!/bin/sh
+PATH=$PATH:/usr/pkg/bin:/root/.bin; export PATH
+#xclock & 
+xli -onroot -quiet -fullscreen /etc/X11/xdm/netbsd-orange.png
+root-tail -f -color "#FF8747" -geometry 380x24+10+450 -fn -*-lucida-medium-r-normal-*-12-*-*-*-p-*-iso8859-1 /var/log/messages 
+#xconsole -geometry 480x130-0+0 -daemon -notify -verbose -fn -*-lucida-medium-r-normal-*-12-*-*-*-p-*-iso8859-1 -exitOnFail &
+xdm_shot &
+
+(
+xmessage -buttons Shutdown:1,Reboot:2 "" ;
+case $? in
+ 1)
+ exec /sbin/poweroff;;
+ 2)
+ exec /sbin/reboot;;
+ *)
+ echo "XDM closed on `date`";;
+esac
+)&

@@ -1,0 +1,220 @@
+
+# ==========================
+# ===  General settings  ===
+# ==========================
+
+# Start index of window/pane with 1
+set -g  base-index 1
+set -gw pane-base-index 1
+# Remap prefix key 
+unbind   C-b
+set -g   prefix C-a
+bind C-a send-prefix
+# Titles
+set -g set-titles on
+set -g set-titles-string "#I:#W"
+# TERM definitions
+set -g default-terminal "rxvt-unicode-256color"
+# Maximum hist length 
+set -g history-limit 10000
+# Maximum number of buffer to store
+set -g buffer-limit 20
+# Messages diplay time in ms
+set -g  display-time 1500
+# Kill windows whose child process exited
+set -g  remain-on-exit off
+# Allow 2+ commands after single prefix (within 1,0 s)
+set -g  repeat-time 1000
+# Disable automatic windows renaming
+set -gw automatic-rename off
+# No timeout for commands wait after prefix
+set -g  escape-time 0
+# Bridge a buffer to XA_PRIMARY clipboard using
+# OSC52 ANSI escape sequences on xterm (\e]52m;..)
+set -g  set-clipboard on
+# vi-style key table
+set -g  status-keys vi
+set -gw mode-keys vi
+# Windows activity highlights on status line
+set -gw monitor-activity on
+set -gw visual-activity on
+set -gw visual-content on
+# Activity bell and whistles
+set -g  visual-bell on
+set -gw bell-action other
+# warn tmux children apps of focus change events
+set -g focus-events on
+# Enable support for mouse input on xterm
+set -g mouse on
+
+
+
+# ==========================
+# ===   Key bindings     ===
+# ==========================
+
+# Unbind default key bindings
+unbind "\$" 
+unbind ,    
+unbind %    
+unbind '"'  
+unbind }    
+unbind {    
+unbind [    
+unbind ]    
+unbind "'"  
+unbind n    
+unbind p    
+unbind l    
+unbind M-n   
+unbind M-p  
+unbind o    
+unbind &    
+unbind "#"  
+unbind =    
+unbind z   
+unbind M-Up  
+unbind M-Down 
+unbind M-Right 
+unbind M-Left
+
+# == Configuration == 
+
+# Edit configuration 
+bind C-e new-window -n 'tmux.conf' "${EDITOR} ~/.tmux.conf"
+# Reload configuration 
+bind C-r source-file ~/.tmux.conf \; display "Config reloaded"
+	 
+# == Sessions ==
+
+# Detach from session
+bind d detach
+bind D if -F '#{session_many_attached}''confirm-before -p "Detach other clients? (y/n)" "detach -a"'
+bind Q confirm-before -p "kill-session #S? (y/n)" kill-session
+# Rename session
+bind R command-prompt -I "#{session_name}" "rename-session '%%'"
+ 
+# == Windows ==
+
+# New window
+bind c  new-window -c "#{pane_current_path}"
+# Prompt to rename window right after it's created
+set-hook -g after-new-window 'command-prompt -I "#{window_name}" "rename-window '%%'"'
+# Rename window
+bind r   command-prompt -I "#{window_name}" "rename-window '%%'"
+# Select windows
+bind -r C-[ previous-window
+bind -r C-] next-window
+bind -r Tab last-window 
+# Window Monitoring
+bind m set -w monitor-activity \; display-message 'Monitor window activity [#{?monitor-activity,ON,OFF}]'
+# Kill windows
+bind X    kill-window
+bind C-x  confirm-before -p "kill other windows? (y/n)" "kill-window -a"
+ 
+# == Panes == 
+
+# Split panes
+bind | split-window -h -c "#{pane_current_path}"
+bind _ split-window -v -c "#{pane_current_path}"
+# Select panes
+bind -r [ select-pane -t :.-
+bind -r ] select-pane -t :.+
+bind -r h select-pane -L
+bind -r j select-pane -D
+bind -r k select-pane -U
+bind -r l select-pane -R
+# Swap panes
+bind -r C-> swap-pane -D
+bind -r C-< swap-pane -U
+# Resize panes by 5 rows
+bind J resize-pane -D 5
+bind K resize-pane -U 5
+bind H resize-pane -L 5
+bind L resize-pane -R 5
+# Zoom pane
+bind + resize-pane -Z
+# Kill pane
+bind x kill-pane
+
+# == Status ==
+
+# Hide status bar on demand
+bind C-s if -F '#{s/off//:status}' 'set status off' 'set status on'
+
+# == Buffer ==
+
+bind C-# list-buffers
+bind C-p choose-buffer
+bind p   paste-buffer
+
+# == Copy Mode ==
+
+# Trigger copy mode
+bind -n M-Left copy-mode
+# Scrolling
+bind -T copy-mode-vi Up                send-keys -X scroll-up
+bind -T copy-mode-vi Down              send-keys -X scroll-down
+bind -T copy-mode-vi M-Up              send-keys -X halfpage-up
+bind -T copy-mode-vi M-Down            send-keys -X halfpage-down
+bind -T copy-mode-vi PgDn              send-keys -X page-down
+bind -T copy-mode-vi PgUp              send-keys -X page-up
+bind -T copy-mode-vi WheelUpPane       select-pane \; send-keys -X -N 2 scroll-up
+bind -T copy-mode-vi WheelDownPane     select-pane \; send-keys -X -N 2 scroll-down
+# Copy buffer to XA_CLIPBOARD
+bind -T copy-mode-vi M-c send-keys -X copy-pipe-and-cancel "xclip -in -sel clip"
+# Paste XA_CLIBOARD to stdout
+bind -r M-v run-shell "xclip -out -sel clip" 
+
+
+
+# ================================================
+# =============     Appearance      ==============
+# ================================================ 
+ 
+# == Panes == 
+
+set -g pane-border-fg colour238
+set -g pane-active-border-fg colour11
+set -g pane-active-border-bg colour238
+
+# == Messages ==
+
+set -g message-attr bold
+set -g message-fg colour220
+set -g message-bg colour238
+ 
+# == Modes ==
+ 
+set -gw mode-attr bold
+set -gw mode-fg colour220
+set -gw mode-bg colour238
+
+# == Windows ==
+
+set -gw window-status-current-fg white
+set -gw window-status-current-bg colour240
+set -gw window-status-current-attr bright
+set -gw window-status-attr dim
+set -gw window-status-bell-attr bold
+set -gw window-status-bell-fg colour220
+set -gw window-status-bell-bg colour238
+
+# == Clock ==
+
+set -gw clock-mode-colour colour196
+set -gw clock-mode-style 12
+ 
+
+# == Status Bar ==
+
+set -g status on
+set -g status-attr default
+set -g status-position bottom
+set -g status-justify left
+set -g status-interval 5
+set -g status-right-length 100
+set -g status-bg colour239
+set -g status-fg white
+set -g status-left ""
+set -g status-right "#[fg=magenta]ram:#[fg=white]#(mem.sh | awk 'FNR==18 {print $6}' | cut -c1-3) #[fg=yellow]cpu_temp:#[fg=white]#(sysctl dev.cpu.0.temperature | awk '{print $2}')  #[fg=green]zpool /:#[fg=white]#(df -k | egrep 'ROOT|/$' | awk '{print$5}')  #[fg=cyan]uptime: #[fg=white]#(uptime | awk \"{print \\$3}\"|sed \"s/,//\")'"

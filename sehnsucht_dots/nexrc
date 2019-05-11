@@ -1,0 +1,134 @@
+"""			ABBREVATIONS			"""
+ab #d #define
+ab #i #include
+ab Attr Attributes
+ab Appl Application
+ab Vari Variables
+ab Req Request
+ab info information
+ab AKA also known as
+ab ASAP as soon as possible
+ab IRC If I remember correctly
+ab AFAICT As far as I can tell
+ab IMHO In my humble opinion
+ab BTW By the way
+ab NRN No reply necessary
+ab PRB Please reply by
+ab HTH Hope this helps
+ab IDK I don't know
+ab FWIW For what it's worth
+ab SUR Sapienza Universita' di Roma 
+ab fastml sehnsucht@fastmail.com
+ab jabber sehnsucht@xmpp.jp
+
+
+
+"""			MACROS (KEYBINDINGS)			"""
+
+""	Show help
+map H :!$PAGER ~/.vi_help
+
+""	Write out file
+map Q :wq!
+
+""	Read and append <cmd> stdout to next line, first white space
+" previous/current file diff
+map rd +:r!diff -u # %^M                   
+" tmux buffer
+map rb +:r!tmux show-buffer^M
+" today date
+map rt +:r{!}date +\%Y-\%m-\%d^M
+" XA_CLIPBOARD
+map rc +:r!xclip -o -sel clip^M 
+" sysinfo
+map rs +:r!uname -rs^M
+
+
+
+""	Formatting
+" indent lines
+map gi :%!indent -i4^M
+" remove trailing spaces
+map gt :%s/[[:space:]]\{1,\}/
+" format paragraph
+map gf :"{,"}!fmt -p -w 78^M 
+" sort lines alphabetically
+map gs :%!sort -u %^M
+" process file with hunspell
+map gh :!hunspell -d en_US %^M
+" substitute patterns up to  current position
+map gt  :^,.s///g^M
+" double space, whole file
+map gd :%!sed G^M
+" comment lines
+map gc ^X ^i/* ^[A */^[^
+" uncomment lines
+map gu :k/\/\#/^M
+" invert word case
+map gr ywmno^[P:s/./\~/g^M0"nDdd`n@n
+map gR yWmno^[P:s/./\~/g^M0"nDdd`n@n
+" F1 splits lines to the right. F2 to the left.
+map #1 lr
+map #2 hr
+
+
+
+""	Manipulating Buffers
+" display vi buffers
+map K :display buffers
+" cut current line to buffer '1'
+map C  "1Y$dd
+" paste '1' after current position
+map V  a"1p
+" mark current position as begin of new buffer
+map # ma
+" mark current position as end of new buffer
+map * mb
+" append new buffer to next line
+map bi :'a,'b co .
+" delete marked buffer 
+map be :'a,'b del .
+" move marked buffer to 'n' line
+map bm :'a,'b mo .
+
+
+
+"""			TUNABLE OPTIONS			"""
+" Autoindentation
+set ai
+" Char to edit command-line history.
+set cedit=\^[
+" Store buffer on tmpfs
+set dir=/tmp
+" Encoding
+set fileencoding=utf-8
+" Case insensitive searches
+set ignorecase
+" Hide whitespace and EOL characters
+set nolist
+" show line numbers
+set nu
+" Display a row/column ruler
+set ruler
+" Additional section boundaries
+set sections=SeAhBhChDh 
+" Shell env for ! commands
+set shell=/usr/pkg/bin/mksh
+" Show matching brackets
+set showmatch
+" Display current editor mode
+set showmode
+" Shift width in spaces
+set sw=8
+" TAB width in spaces
+set tabstop=8
+" TERM type
+set term=rxvt-unicode-256color
+" Enable left->right scrolling
+set leftright
+" Verbose error messages
+set verbose
+" 78-N chars wrapmargin
+set wm=2
+set wl=78
+

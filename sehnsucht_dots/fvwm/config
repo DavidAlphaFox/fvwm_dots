@@ -1,0 +1,787 @@
+##############################################################################
+#
+#                                                                             
+# Global Settings                                               
+#                                                                             
+#
+##############################################################################
+
+ImagePath $[FVWM_DATADIR]/pixmaps:$[HOME]/.fvwm/icons:$[HOME]/.fvwm/pixmaps
+ClickTime 	250
+DeskTopSize 	2x2
+DesktopName    	0 FVWM Desktop
+OpaqueMoveSize 	150
+SnapAttraction 	10 All Screen
+XorValue 	55555
+EdgeScroll 	0 0
+EdgeThickness 	1
+EdgeResistance 	800 20
+EdgeCommand 	Left nop
+ColormapFocus 	FollowsMouse
+EWMHUseStackingOrderHints
+EwmhBaseStruts 	4 4 4 4
+DefaultLayers 	2 4 6
+IgnoreModifiers L25
+MoveThreshold 	10
+HideGeometryWindow Move, Resize
+BugOpts 	FlickeringMoveWorkaround True,  EWMHIconicStateWorkaround True
+BusyCursor 	DynamicMenu True, Read True, Wait True
+
+
+
+
+##############################################################################
+#
+#                                                                             
+# Functions                                                            
+#                                                                             
+#
+##############################################################################
+
+# Startup Modules
+  DestroyFunc StartFunction
+  AddToFunc StartFunction
+	+ I Module FvwmCommandS
+	+ I Module FvwmPager
+	+ I Module FvwmAnimate
+	+ I Module FvwmButtons StatusBar 
+
+# Startup Sript
+  DestroyFunc InitFunction
+  AddToFunc InitFunction
+ 	+ I Test (F $[FVWM_USERDIR]/autostart)\
+		Exec exec /bin/sh $[FVWM_USERDIR]/autostart
+
+  DestroyFunc RestartFunction
+  AddToFunc RestartFunction
+	+ I Nop
+
+  DestroyFunc SessionInitFunction
+  AddToFunc SessionInitFunction
+	+ I Nop
+
+  DestroyFunc SessionRestartFunction
+  AddToFunc SessionRestartFunction
+	+ I Nop
+
+# Suckless WindowList
+  AddToFunc PickWindow
+   	+ I WindowList (CurrentPage) Root c c CurrentDesk NoDeskNum, \
+       		NoNumInDeskTitle, NoGeometryWithInfo, IconifiedAtEnd, \
+       		SelectOnRelease, MaxLabelWidth 45
+
+
+# Raise & Move / Shade
+  DestroyFunc Move-or-Raise
+  AddToFunc Move-or-Raise
+	+ I Raise
+	+ M Move
+	+ D Windowshade
+
+# Move to Bottom Layer/Unmaximize
+  AddToFunc MoveLower
+ 	+ I Layer 0 4
+ 	+ C Lower
+ 	+ M ThisWindow (Maximized) Maximize false
+	+ D RaiseLower
+
+
+# Automatic IconBox Elements Rearrange
+  AddToFunc Deiconify-and-Rearrange
+   	+ I Iconify 
+   	+ I All (CurrentPage, Iconic) PlaceAgain Icon
+  DestroyFunc Move-or-Iconify
+  AddToFunc Move-or-Iconify
+	+ I Raise
+	+ M Move
+	+ D Deiconify-and-Rearrange
+
+# Raise & Resize / (Undo)Lower
+  DestroyFunc Resize-or-Raise
+  AddToFunc Resize-or-Raise
+	+ I Raise
+	+ M Resize
+	+ D RaiseLower
+
+# Maximize/Expand with EWMH compliance 
+  AddToFunc Max	
+  	+ C Maximize  ewmhiwa 100 100
+   	+ M Maximize  ewmhiwa growonlayers $[w.layer] -1 grow grow
+
+# Toggle FullScreen On/Off
+  AddToFunc FullScreen
+ 	+ I ThisWindow (Maximized) Fullscreen-Stop
+	+ I TestRc (False) ThisWindow (!Maximized) FullScreen-Start
+  AddToFunc   FullScreen-Start
+	+ I ThisWindow (Maximized) WindowStyle Title, Borders
+	+ I TestRc (!Match) WindowStyle !Title, \
+	                    !Borders, FixedSize, FixedPosition
+	+ I TestRc (!Match) Raise
+	+ I TestRc (!Match) UpdateStyles
+	+ I Maximize ewmhiwa  100 100
+	+ I SetEnv CurrentWindowState_$[w.id] Maximize
+  AddToFunc FullScreen-Stop
+	+ I DestroyWindowStyle
+	+ I UpdateStyles
+	+ I ThisWindow (Maximized) Maximize
+
+# Tiling
+  AddToFunc TileLeft
+	+ I ThisWindow (!Shaded, !Iconic) Maximize 50 100
+	+ I ThisWindow (Maximized, !Shaded, !Iconic) Move +0 +0
+  AddToFunc TileRight
+	+ I ThisWindow (!Shaded, !Iconic) Maximize 50 100
+	+ I ThisWindow (Maximized, !Shaded, !Iconic) Move -0 +0
+  AddToFunc TileTop
+	+ I ThisWindow (!Shaded, !Iconic) Maximize 100 50
+	+ I ThisWindow (Maximized, !Shaded, !Iconic) Move +0 +0
+  AddToFunc TileBottom
+	+ I ThisWindow (!Shaded, !Iconic) Maximize 100 50
+	+ I ThisWindow (Maximized, !Shaded, !Iconic) Move +0 -0
+  AddToFunc TileTopLeft
+	+ I ThisWindow (!Shaded, !Iconic) Maximize 50 50
+	+ I ThisWindow (Maximized, !Shaded, !Iconic) Move +0 +0
+  AddToFunc TileTopRight
+	+ I ThisWindow (!Shaded, !Iconic) Maximize 50 50
+	+ I ThisWindow (Maximized, !Shaded, !Iconic) Move -0 +0
+  AddToFunc TileBottomLeft
+	+ I ThisWindow (!Shaded, !Iconic) Maximize 50 50
+	+ I ThisWindow (Maximized, !Shaded, !Iconic) Move +0 -0
+  AddToFunc TileBottomRight
+	+ I ThisWindow (!Shaded, !Iconic) Maximize 50 50
+	+ I ThisWindow (Maximized, !Shaded, !Iconic) Move -0 -0
+
+# Increase/Decrease Window Size by 10 lines
+  AddToFunc IncVerticalSize
+	+  I ThisWindow (!Shaded, !Iconic) Resize keep w+10c   
+  AddToFunc IncHorizontalSize
+	+  I ThisWindow (!Shaded, !Iconic) Resize w+10c keep 
+  AddToFunc DecVerticalSize
+	+  I ThisWindow (!Shaded, !Iconic) Resize keep w-10c 
+  AddToFunc DecHorizontalSize
+	+  I ThisWindow (!Shaded, !Iconic) Resize w-10c keep 
+
+# Dynamically Circulate Focus Across Windows 
+  AddToFunc Raise-and-FlipFocus 
+        + I Raise
+  	+ I FlipFocus   
+  AddToFunc CirculateFocus
+	+ I Raise-and-FlipFocus 
+	+ I WarpToWindow !raise 5 5	
+
+# Go to 'x' Page (Focusing first not Iconified/Shaded Window)
+  AddToFunc GotoPageFocus
+   	+ I GotoPage $*
+  	+ I PointerWindow (CurrentPage, !Sticky, !Shaded, !Iconic) Focus
+   	+ I TestRc (!Match) Next (CurrentPage, !Sticky, \
+               !Shaded, !Iconic) Raise-and-Focus	       
+
+# Move 'Window' to 'x' Page, Go to $x (focusing $Window)
+  AddToFunc MoveAndGotoPage
+        + I MoveToPage $*
+  	+ I GotoPageFocus $*   
+
+# (De)Iconify dock at will
+AddToFunc HideShowPanel
+ 	+ I All (StatusBar)  Iconify  
+   
+
+
+
+##############################################################################
+#
+#                                                                             
+#
+# Mouse Bindings                                                   
+#                                                                             
+#
+##############################################################################
+
+#===========[Button][Context] [Mod]    [Action]
+
+# Root Window (Desktop):
+  Mouse	        1	R 	A	Menu RootMenu Nop	
+  Mouse	        3	R 	A       Menu Window-Ops Nop     
+  Mouse 	8	R 	A       PickWindow		
+
+# TitleBar Buttons:
+  Mouse 	0 	1   	A       Menu Window-Ops
+  Mouse 	1 	2   	A       Max
+  Mouse 	3 	2   	A       ThisWindow (Maximized) Maximize false
+  Mouse 	0 	2   	M       FullScreen
+  Mouse 	0 	3   	A       MoveLower
+  Mouse 	0 	4   	A       Iconify
+
+
+# Borders/Icons:
+  Mouse 	1	FS 	A       Resize-or-Raise
+  Mouse 	1	TS 	A       Move-or-Raise
+  Mouse 	1	I 	A       Move-or-Iconify
+  Mouse 	3	I 	A       Iconify
+  Mouse 	3	FST 	A       Menu Window-Ops Nop
+  Mouse 	8	TSIF 	A       RaiseLower
+
+
+# Scrollwheel to go up/down Pages
+  Mouse 	4 	R   	A   	GotoPageFocus +0p -1p
+  Mouse 	5 	R   	A   	GotoPageFocus +0p +1p
+
+
+# Scrollwheel (+S) to go left/right Pages
+  Mouse 	4 	R   	S   	GotoPageFocus +1p -0p
+  Mouse 	5 	R   	S   	GotoPageFocus -1p +0p
+
+
+# Mouse-grab with Alt for various Window-Ops
+  Mouse 	1 	W 	M   	Move-or-Raise
+  Mouse 	3 	W 	M   	Resize-or-Raise
+  Mouse 	8 	W 	M 	Iconify
+  Mouse 	9 	W 	M 	Close
+
+
+
+
+
+##############################################################################
+#
+#                                                                             
+#
+# Keyboard Bindings                                                   
+#                                                                             
+#
+##############################################################################
+
+#===============[Key]	    [Context] [Mod]    [Action]
+
+# Ctrl + Arrow scrolls by 1 page.
+  Key           Left		A	S	Scroll -100 0
+  Key           Right		A	S	Scroll +100 +0
+  Key           Up      	A	S	Scroll +0   -100
+  Key           Down		A	S	Scroll +0   +100
+
+# Alt + Arrow scrolls by 1/10 of a page.
+  Key 		Left	A	C	Scroll -10 +0
+  Key 		Right	A	C	Scroll +10 +0
+  Key 		Up	A	C	Scroll +0  -10
+  Key 		Down	A	C	Scroll +0  +10
+
+# Shift-Control + Arrow moves the pointer by 1% of a page.
+  Key 		Left	A	SC	CursorMove -1 0
+  Key 		Right	A	SC	CursorMove +1 +0
+  Key 		Up	A	SC	CursorMove +0 -1
+  Key 		Down	A	SC	CursorMove +0 +1
+
+# Shift-Alt + Arrow moves the pointer by 1/10 of a page.
+  Key 		Left	A	SM	CursorMove -10 +0
+  Key 		Right	A	SM	CursorMove +10 +0
+  Key 		Up	A	SM	CursorMove +0 -10
+  Key 		Down	A	SM	CursorMove +0 +10
+
+# Ctrl-Alt + Arrow moves windows to different pages
+  Key 		Up	A	CM 	MoveToPage +0p -1p
+  Key 		Right 	A 	CM      MoveToPage +1p +0p
+  Key 		Left  	A 	CM 	MoveToPage -1p +0p
+  Key 		Down  	A 	CM 	MoveToPage +0p +1p
+
+# Ctrl-Shift-Alt + Arrow moves window to page, goes to $page focusing $window
+  Key 		Up 	A 	CSM 	MoveAndGotoPage +0p -1p
+  Key 		Right 	A 	CSM 	MoveAndGotoPage +1p +0p
+  Key 		Left 	A 	CSM 	MoveAndGotoPage -1p +0p
+  Key 		Down 	A 	CSM 	MoveAndGotoPage +0p +1p
+
+
+# Super + Arrow tiles window to half screen
+  Key 		Left  	A 	4 	TileLeft
+  Key 		Right 	A 	4 	TileRight
+  Key 		Up    	A 	4 	TileTop
+  Key 		Down  	A 	4 	TileBottom
+
+# Super-Shift + Arrow tiles window to screen quarter
+  Key 		Up     	A 	S4 	TileTopLeft
+  Key 		Left    A 	S4 	TileBottomLeft
+  Key 		Right   A 	S4 	TileTopRight
+  Key 		Down    A 	S4 	TileBottomRight
+
+# Ctrl-Super + Arrow resizes window by 10 lines 
+  Key 		Left  	A 	C4 	DecHorizontalSize
+  Key 		Right 	A 	C4 	IncHorizontalSize
+  Key 		Up    	A 	C4 	DecVerticalSize
+  Key 		Down  	A 	C4 	IncVerticalSize
+
+
+# Alt + Tab Cycles between windows 
+Key 		Tab 	A 	M 	Next (CurrentPage, !Iconic, !Shaded, \
+                                      	 AcceptsFocus) CirculateFocus
+Key 		Tab 	A 	SM 	Prev (CurrentPage, !Iconic, !Shaded, \
+					 AcceptsFocus) CirculateFocus
+
+# Function Keys bindings
+  Key 		F1	A	N	PickWindow
+  Key 		F2	A	N	Popup Window-Ops
+  Key 		F3	A	N	Popup Applications
+  Key 		F4	A	N	Iconify
+  Key 		F5	A	N	Max
+  Key 		F6	A	N	Move
+  Key 		F7	A	N	Resize
+  Key 		F8	A	N	TileLeft
+  Key 		F9	A	N	TileRight
+  Key 		F10     A       N       HideShowPanel
+  Key 		F11     A       N       FullScreen
+  Key 		F12     A	N	Popup X11-Session
+  
+# XF86/Fn Keyboard Symbols bindings
+  Key XF86AudioMute 	   A N Exec exec mixer -f \
+                             		/dev/mixer vol 0:0 > /dev/null 2>&1
+  Key XF86AudioLowerVolume A N Exec exec mixer -f \
+                             		/dev/mixer vol -5:-5 > /dev/null 2>&1
+  Key XF86AudioRaiseVolume A N Exec exec mixer -f \
+                             		/dev/mixer vol +5:+5 > /dev/null 2>&1
+  Key XF86AudioPlay        A N Exec exec mpc play > /dev/null 2>&1
+  Key XF86AudioStop        A N Exec exec mpc pause > /dev/null 2>&1
+  Key XF86AudioPrev        A N Exec exec mpc prev > /dev/null 2>&1
+  Key XF86AudioNext        A N Exec exec mpc next > /dev/null 2>&1
+  key XF86WWW              A N Exec exec seamonkey
+  key XF86Terminal         A N Exec exec urxvtc -pe tabbed
+  key XF86Go               A N Exec exec rofi -show run
+  Key XF86Mail             A N Exec exec sylpheed
+  Key XF86HomePage         A N Exec exec pcmanfm
+  Key XF86Sleep            A N Exec exec acpiconf -s3 > /dev/null 2>&1
+  Key XF86LogOff           A N Exec exec xscreensaver-command -lock
+
+
+
+
+
+##############################################################################
+#                                                                             
+#
+# Basic Style Settings                                                        
+#
+#                                                                             
+#
+##############################################################################
+
+# General 
+Emulate Mwm
+DefaultFont "xft:Terminus\ (TTF):medium:antialias=true:size=10"
+
+
+# Color scheme
+CleanupColorsets
+DefaultColorset 0
+ColorSet 0 fg \#000000, bg \#aeb2c3, hi \#dcdee5, sh \#5d6069
+ColorSet 1 fg \#000000, bg \#aeb2c3, hi \#dcdee5, sh \#5d6069
+ColorSet 2 fg \#ffffff, bg \#b24d7a, hi \#dcadc2, sh \#57253b
+ColorSet 3 fg \#000000, bg \#aeb2c3, hi \#dcdee5, sh \#5d6069
+
+# Windows
+Style *   BorderWidth 4 
+Style *   HandleWidth 4
+Style *   ColorSet 1 
+Style *   HilightColorset 2
+Style *   SloppyFocus
+Style *   MouseFocusClickRaises
+Style *   FPClickRaisesFocused 
+Style *   FPGrabFocus 
+Style *   FPReleaseFocus
+Style *   FPLenient
+Style *   FPSortWindowlistByFocus
+Style *   FPIgnoreRaiseClickMotion
+Style *	  NoPPosition
+Style *   TileCascadePlacement
+Style *   DecorateTransient
+Style *   StackTransientParent
+Style *   EWMHUseStackingOrderHints
+Style *   EdgeMoveDelay 250
+Style *   EdgeMoveResistance 10
+Style *   Font "xft:Terminus\ (TTF):medium:antialias=true:size=10"
+Style *   WindowShadeSteps 64
+Style *   WindowShadeShrinks
+Style *   HintOverride
+Style *   ResizeOpaque
+Style *   ResizeHintOverride
+Style *   MwmDecor
+Style *	  MwmBorder
+Style *   MwmButtons
+Style *   MwmFunctions
+
+# Cursors
+CursorStyle ROOT left_ptr
+CursorStyle TITLE left_ptr
+CursorStyle DEFAULT left_ptr
+CursorStyle SYS left_ptr
+CursorStyle MENU left_ptr
+CursorStyle WAIT left_ptr
+
+# Menus
+MenuStyle * Mwm, \
+            MenuColorset 3, \
+            TitleWarp, \
+	    Hilight3DThick, \
+	    MenuFace TiledPixmap marble.xpm, \
+	    SidePic fvwm_sidebar3.xpm, \
+	    SideColor #9c9fad, \
+            SeparatorsLong, \
+            BorderWidth 1, \
+            VerticalMargins 3 3, \
+	    VerticalItemSpacing 2 4, \
+	    VerticalTitleSpacing 2 4, \
+            Font "xft:Terminus\ (TTF):medium:antialias=true:size=10", \
+	    TitleFont "xft:Terminus\ (TTF):bold:antialias=true:size=11"  
+
+# Button Hints
+ButtonStyle 1 - MWMDecorMenu
+ButtonStyle 2 - Clear
+ButtonStyle 3 - MWMDecorShade
+ButtonStyle 4 - MWMDecorMax
+ButtonStyle 6 - MWMDecorMin	
+
+# TitleBar
+TitleStyle Centered Height 15
+TitleStyle ActiveUp   -- Raised
+TitleStyle ActiveDown -- Raised
+TitleStyle Inactive   -- Raised
+
+# Borders
+BorderStyle Inactive -- HiddenHandles NoInset 
+BorderStyle Active   -- HiddenHandles NoInset 
+
+
+
+
+###############################################################################
+#
+# FvwmAnimate
+#
+#
+##############################################################################
+
+SetAnimation 10 -.01 0 .01 .03 .08 .18 .3 \
+  .45 .6 .75 .85 .90 .94 .97 .99 1.0
+
+*FvwmAnimate:	Effect	Zoom3D
+*FvwmAnimate:	Width	2
+*FvwmAnimate:	Color	grey
+*FvwmAnimate:   Iterations 16
+*FvwmAnimate:	Delay	3
+*FvwmAnimate:   Twist 6
+
+
+
+
+##############################################################################
+#
+#                                                                            
+# FvwmPager                                                           
+#
+#                                                                             
+##############################################################################
+
+
+Style FvwmPager BorderWidth 1,HandleWidth 1, FixedPosition, \
+                FixedSize, Layer 0 2, State 2, StaysOnBottom, \
+		MouseFocusClickRaises
+		
+*FvwmPager:	Back #7c7d82
+*FvwmPager: 	Fore #2f2f4a
+*FvwmPager: 	Hilight #2f2f4a
+*FvwmPager: 	Font none
+*FvwmPager: 	WindowBorderWidth 1
+*FvwmPager: 	UseSkipList
+*FvwmPager: 	MiniIcons
+*FvwmPager: 	Balloons All
+*FvwmPager: 	BalloonBack #a2a2d6
+*FvwmPager: 	BalloonBorderColor #000000
+*FvwmPager: 	BalloonBorderWidth 1
+*FvwmPager: 	BalloonStringFormat %i
+*FvwmPager: 	BalloonFont "xft:Terminus\ (TTF):medium:antialias=true:size=10"
+*FvwmPager: 	BalloonYOffset +2
+*FvwmPager: 	Geometry 136x68-0-137
+*FvwmPager: 	SmallFont 5x8
+
+
+
+
+##############################################################################
+#
+#
+# IconBox
+#
+#
+##############################################################################
+
+Style * IconBox 48x480+0+25, IconFill Left Top, IconGrid 90 90, \
+        IconTitleFormat %i, IconTitleRelief, IconBackgroundRelief 1, \
+        IconBackgroundPadding 0, IconSize 48 48, IconTitleColorset 1, \
+        IconBackgroundColorset 0, HilightIconTitleColorset 2
+
+Style * IconFont "xft:Terminus\ (TTF):medium:antialias=true:size=9"
+
+Style * StickyIcon, !StickyStippledIconTitle
+
+
+Style URxvt 	!Title, IconOverride, Icon next_term.xpm 
+Style SeaMonkey 	IconOverride, Icon WWW.xpm
+Style Xpdf 		IconOverride, Icon pdf.png
+Style NEdit 		IconOverride, Icon editor.png
+Style Sylpheed 		IconOverride, Icon mail.png
+Style Pcmanfm 		IconOverride, Icon fm.png
+Style Audacious 	IconOverride, Icon player.png
+Style slrn 		IconOverride, Icon NewsAgent.xpm
+Style irssi 		IconOverride, Icon bx2.xpm
+Style htop 		IconOverride, Icon Daemon.xpm
+Style xmmix 		IconOverride, Icon mixer.png
+Style FBReader 		IconOverride, Icon Bookshelf.xpm
+Style mpv 		IconOverride, Icon mpv.png
+Style Gimp 		IconOverride, Icon gimp.png
+Style "OpenOffice 4.1.6" IconOverride, Icon writer.png
+Style StatusBar 	Icon xosview.xpm
+
+
+
+
+##############################################################################
+#
+#                                                                            
+# FvwmButtons                                                           
+#
+#                                                                             
+##############################################################################
+
+Style StatusBar !Maximizable, StaysOnBottom, !Borders, !Title, \
+	Layer 0 2, State 2, Sticky, WindowListSkip, CirculateSkip, \
+	FixedSize, !Closable, !FixedPosition, BorderWidth 0, \
+	HandleWidth 0 
+
+
+*StatusBar:	Geometry 340x136-0-0
+*StatusBar:	Font "xft:Terminus\ (TTF):medium:antialias=true:size=10"
+*StatusBar:	Rows 2
+*StatusBar:	Columns 5
+*StatusBar:	Fore black
+*StatusBar:	Back #afadbf
+*StatusBar:	BoxSize dumb
+
+
+*StatusBar: (Size 2x1, Padding 2, Frame 2, \
+             Swallow(UseOld, NoClose, NoHints, Respawn, NoTitle) FvwmPager
+*StatusBar: (Size 3x1, Padding 2, Frame 2, \
+             Swallow(UseOld, NoClose, NoHints, Respawn, NoTitle) "xosview" \
+             `Exec exec xosview`)	     
+*StatusBar: (Size 1x1, Padding 2, Frame 2, \
+             Swallow(UseOld, NoClose, NoHints, Respawn, NoTitle) "asclock" \
+             `Exec exec asclock -12 -l "#f77bf7"`)
+*StatusBar: (Size 1x1, Padding 2, Frame 2, \
+             Swallow(UseOld, NoClose, NoHints, Respawn, NoTitle) "wmweather+" \
+             `Exec exec wmweather+`)
+*StatusBar: (Size 1x1, Padding 2, Frame 2, \
+            Swallow(UseOld, NoClose, NoHints, Respawn, NoTitle) "WMmp" \
+             `Exec exec WMmp`)
+*StatusBar: (Size 1x1, Padding 2, Frame 2,  \
+             Swallow(UseOld, NoClose, NoHints, Respawn, NoTitle) "wmrecord" \
+             `Exec exec wmrecord`)	     
+*StatusBar: (Size 1x1, Padding 2, Frame 2,  \
+             Swallow(UseOld, NoClose, NoHints, Respawn, NoTitle) "wmix" \
+             `Exec exec wmix`)
+	    
+	    
+
+
+
+##############################################################################
+#	     
+#                                                                             
+# Menus                                                                       
+#
+#                                                                           
+##############################################################################
+
+# Main Menu
+  AddToMenu RootMenu "Fvwm Menu" Title
+	+ "&Terminal%mini.term.xpm%"		Exec exec urxvtc -pe tabbed
+	+ "&Launcher%mini.run2.xpm%"         	Exec exec rofi -show run 
+	+ "&Applications%daemon.xpm%"     	Popup Applications
+	+ ""                  Nop
+	+ "&Window Ops%mini.windows.xpm%"       Popup Window-Ops
+	+ "&X11 Session%mini.bx2.xpm%"      	Popup X11-Session
+
+  AddToMenu "Window-Ops"
+  	+ "&Move%mini.move1.xpm%"               Move
+	+ "&Resize%mini.resize3.xpm%"           Resize
+	+ "&Shade%mini.raise2.xpm%"             WindowShade
+	+ "&TileLeft%mini.arrows.xpm%"          TileLeft
+	+ "&TileRight%mini.arrows.xpm%"         TileRight
+	+ "&Stick%mini.stick.xpm%"              Stick
+	+ ""                 Nop  
+	+ "&Close%mini.cross.xpm%"              Close
+	+ "&Kill%mini.destroy.xpm%"             Destroy
+
+  AddToMenu "X11-Session"
+	+ "&Refresh Screen%mini.turn.xpm%"      Refresh
+	+ "&Restart WM%mini.exclam.xpm%"        Restart
+	+ ""                 Nop
+	+ "Lock Screen%mini.lock.xpm%"          Exec exec \
+						  xscreensaver-command -lock
+	+ "Exit FVWM%mini.exit.xpm%"            Quit
+
+
+
+# Application Menu
+  AddtoMenu Applications
+	+ "&Editors%mini.editor.png%"           Popup Editors
+	+ "&File Managers%mini.folder1.xpm%"    Popup FM
+	+ "&Terminal Emulators%mini.sun_term.xpm%" Popup Terminal
+	+ "&Network%mini.netscape1.xpm%"        Popup Network
+	+ "&Multimedia%mini.sounds1.xpm%"       Popup Multimedia
+	+ "&Graphics%mini.paint1.xpm%"          Popup Graphics
+	+ "&Office%mini.bookshelf.xpm%"         Popup Office
+	+ "&System%mini.computer.png%"          Popup System
+	+ "&Utils%mini.accessories.png%"        Popup Utils
+
+ AddtoMenu Editors
+	+ "Joe%mini.joe.xpm%"		        Exec exec urxvtc \
+	                                            -g 92x35 -e joe
+	+ "Xfw%mini.xfw.xpm%"	                Exec exec xfw
+	+ "Nedit%mini.nedit.xpm%"	        Exec exec nedit
+	+ "Vi%mini.vi.xpm%"                     Exec exec urxvtc \
+	                                            -g 92x35 -e vi
+  AddtoMenu Network
+	+ "&Browsers%mini.www.xpm%"         	Popup Browsers
+	+ "&Mail%mini.mail.png%"            	Popup Mail
+	+ "&News%mini.newsagent.xpm%"           Popup News
+	+ "&Chat%mini.chat.xpm%"             	Popup Chat
+	+ "Transmission%mini.transmission.xpm%" Exec exec transmission-gtk
+
+  AddtoMenu Browsers
+	+ "W3m%mini.w3m.xpm%"                   Exec exec urxvtc -g 92x35 \
+	                                            -e w3m -F -graph www.duckduckgo.com
+	+ "Seamonkey%mini.seamonkey.xpm%"       Exec exec seamonkey
+	+ "Vimb%mini.netscape.xpm%"             Exec exec \
+	                                            vimb www.duckduckgo.com
+	+ "Gopher%mini.gopher1.xpm%"            Exec exec urxvtc -g 92x35 \
+	                                            -e gopher gopher://gopher.floodgap.com/1/v2
+  AddtoMenu Mail
+	+ "Sylpheed%mini.sylpheed.png%"         Exec exec sylpheed
+	+ "alpine%mini.pine.xpm%"    		Exec exec urxvtc \
+	                                            -g 92x35 -e alpine
+	+  "neomutt%mini.mutt.xpm%"             Exec exec urxvtc \
+	                                            -g 92x35 -e neomutt 
+  AddtoMenu News
+	+ "liferea%mini.liferea.xpm%"  		Exec exec liferea
+	+ "newsboat%mini.rss.xpm%" 		Exec exec urxvtc \
+	                                            -g 92x35 -e newsboat
+	+ ""                 Nop
+	+ "tin%mini.news1.xpm%"              	Exec exec urxvtc \
+	                                            -g 92x35 -e rtin -aA
+	+ "slrn%mini.news2.png%"             	Exec exec urxvtc \
+	                                          -g 92x35 -e slrn -h snews://orbitalfox.eu
+	+    "pan%mini.newsgroups.xpm%"         Exec exec pan 
+	
+  AddtoMenu Chat
+	+ "Irssi%mini.irc.xpm%"               	Exec exec urxvtc \
+	                                            -g 92x35 -e irssi    
+	+ "HexChat%mini.xchat.xpm%"            	Exec exec hexchat
+	+ ""                 Nop
+	+ "Pidgin%mini.pidgin.xpm%"            	Exec exec pidgin
+	+ "Profanity%mini.xmpp.xpm%"           	Exec exec urxvtc \
+	                                           -g 92x35 -e profanity
+	+ ""                 Nop
+	+ "SDF%mini.putty.xpm%"        		Exec exec urxvtc \
+	                                          -g 92x35 -e ssh sehnsucht@tty.sdf.org
+	+  "Tootstream%mini.mastodon.xpm%"      Exec exec urxvtc \
+	                                          -g 92x35 -e tootstream
+	+ "rtv%mini.reddit.xpm%"        	Exec exec urxvtc \
+                                                    -g 92x35 -e rtv	
+  AddtoMenu FM
+	+ "Pcmanfm%mini.fm.png%" 		Exec exec pcmanfm
+	+ "Xfe%mini.xfe.xpm%"     		Exec exec xfe
+	+ "nnn%mini.fileman.xpm%"     		Exec exec urxvtc -e nnn
+	+ "Xplore%mini.xplore.xpm%"  		Exec exec xplore
+
+  AddtoMenu Terminal
+	+ "Xterm%mini.xterm1.xpm%" 		Exec exec xterm
+	+ "RXvt%mini.term.xpm%"  		Exec exec urxvt -pe tabbed
+	+ "Eterm%mini.term2.xpm%" 		Exec exec Eterm
+
+  AddtoMenu Multimedia
+	+ "EasyTag%mini.info.xpm%" 		Exec exec easytag
+	+ "MPV%mini.mpv.png%" 			Exec exec mpv \
+	                           -player-operation-mode=pseudo-gui
+	+ "Xcdroast%mini.xcdroast.xpm%" 	Exec exec xcdroast
+	+ "Audacious%mini.xmms2.xpm%"		Exec exec audacious
+	+ "ncmpc%mini.mpc.xpm%" 		Exec exec urxvtc  -e ncmpc
+	+ "gradio%mini.radio.xpm%" 		Exec exec gradio
+	+ "mps-youtube%mini.youtube.xpm%" 	Exec exec urxvtc -e mpsyt
+	+ "xine%mini.xine1.xpm%" 		Exec exec xine 
+	+ "audacity%mini.audacity.xpm%" 	Exec exec audacity
+
+  AddtoMenu Graphics
+	+ "Xfi%mini.xfi.xpm%" 			Exec exec gpicview
+	+ "Xv%mini.xv2.xpm%" 			Exec exec xv
+	+ "OpenOffice Draw%mini.draw.xpm%" 	Exec exec \
+	                                             openoffice-4.1.6-sdraw
+	+ "GIMP%mini.gimp.xpm%" 		Exec exec gimp
+	+ "Dia%mini.xfig.xpm%" 			Exec exec dia
+	+ "Xpaint"%mini.xpaint1.xpm% 		Exec exec xpaint
+
+  AddtoMenu Office
+	+ "Xpdf%mini.pdf.png%" 			Exec exec xpdf
+	+ "E-book reader%mini.bookshelf.xpm%"	Exec exec FBReader
+	+ "Lyx%mini.lyx.xpm%" Exec exec lyx
+	+ "GhostView%mini.gv.xpm%" 		Exec exec gv
+	+ "XDrawChem%mini.chem.xpm%" 		Exec exec xdrawchem
+	+ ""                 Nop
+	+ "OpenOffice Calc%mini.scalc.xpm%" 	  Exec exec \
+						   openoffice-4.1.6-scalc
+	+ "Openoffice Impress%mini.simpress.xpm%" Exec exec \
+						   openoffice-4.1.6-simpress
+	+ "Openoffice Math%mini.smath.xpm%"       Exec exec \
+	                                           openoffice-4.1.6-smath
+	+ "OpenOffice Writer%mini.swriter.xpm%"   Exec exec \
+	                                           openoffice-4.1.6-swriter
+						   
+  AddtoMenu Utils
+	+ "Xephem%mini.xephem.xpm%" 		Exec exec xephem
+	+ "Free42%mini.calc2.xpm%" 		Exec exec free42bin
+	+ "XDiary%mini.book2.xpm%" 		Exec exec xdiary
+	+ "Xanalyser%mini.midi.xpm%" 		Exec exec xanalyser
+	+ "Xarchiver%mini.lnxzip.xpm%" 		Exec exec xarchiver
+	+ "Coolman%mini.manual1.xpm%" 		Exec exec coolman
+	+ "Xmaddressbook%mini.book4.xpm%" 	Exec exec xmaddressbook
+	+ "mgdiff%mini.diff.xpm%" 		Exec exec mgdiff
+	+ "Xcolorsel%mini.wizard.xpm%" 		Exec exec xcolorsel 
+
+  AddtoMenu System
+	+ "&Settings%mini.gears.xpm%"  		Popup Settings
+	+ ""                 Nop
+	+ "Gkrellm%mini.gkrellm1.xpm%" 		Exec exec gkrellm
+	+ "Xosview%mini.xosview.png%" 		Exec exec xosview
+	+ "Htop%mini.graph.xpm%" 		Exec exec urxvtc \
+						   -92x35 -e htop
+	+ "SMART%mini.fdisk.xpm%" 		Exec exec gsmartcontrol
+	+ "slurm%mini.bench.xpm%" 		Exec exec urxvtc \
+						   -e slurm -c -i em0
+	+ "tcpview%mini.server.png%" 		Exec exec tcpview
+	+ "bsdconfig%mini.bsd.xpm%" 		Exec exec urxvtc -g bsdconfig
+	+ "ncdu%mini.diskette.xpm%" 		Exec exec urxvtc -e ncdu
+	+ "ddd%mini.help.xpm%"    		Exec exec ddd
+	+ "xkill%mini.destroy.xpm%" 		Exec exec xkill
+
+  AddtoMenu Settings
+	+ "Customize Look and Feel%mini.style.xpm%" 	  Exec exec \
+	                                                       lxappearance
+	+ "Monitor Settings%mini.monitor.xpm%" 		  Exec exec lxrandr
+	+ "Input Device Preferences%mini.mouse.xpm%" 	  Exec exec lxinput
+	+ "Xmmix%mini.mixer.png%" 			  Exec exec xmmix
+	+ "Nvidia Settings%mini.nvidia2.xpm%" 		  Exec exec \
+	                                                      nvidia-settings
+	+ "Screensaver%mini.screensaver.xpm%" 		  Exec exec \
+	                                                     xscreensaver-demo
+	+ "Preferred Applications%mini.applications.xpm%" Exec exec \
+	                                            exo-preferred-applications
+
+
+
+
+
+

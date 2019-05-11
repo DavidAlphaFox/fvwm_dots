@@ -1,0 +1,177 @@
+#!/bin/ksh
+#
+# Original version from SDF.org Unix Public Shell, all rights to it
+# $Id: mkgopher,v 1.1 2018/01/29 17:19:20 smj Exp $
+
+PATH=/bin:/usr/bin:/usr/pkg/bin
+VERSION="MKGOPHER (c)2003 smj@sdf.lonestar.org - Version 4"
+LOGNAME=`whoami`
+GOPHERSPACE="$HOME/gopher"
+REALGOPHERSPACE="/ftp/pub/users/$LOGNAME"
+umask 027
+if [ -L $GOPHERSPACE ]
+then cd $GOPHERSPACE
+else SETUP=0
+fi
+
+case $1 in
+ -p) /usr/pkg/bin/mkgopherspace 
+     exit 0 ;;
+esac
+
+CHKDIR(){
+if [ "$SETUP" = "0" ]
+then echo "\n You must SETUP your GOPHERSPACE before you can use it.\n" 
+     return 1
+fi
+}
+
+echo "$VERSION"
+echo
+echo "Type HELP for Commands."
+echo
+while true
+do
+echo "MKGOPHER> \c"
+read parse
+command=`echo $parse|awk '{print $1}'|tr "[a-z]" "[A-Z]"`
+
+case $command in
+
+   HELP) echo
+         echo "    $VERSION"
+         echo
+         echo "    HOWTO                 - Tips on managing your GOPHERSPACE"
+         echo "    setup                 - First step, create your GOPHERSPACE"
+         echo "    chmod                 - Set/Restore file permissions"
+         echo "    title                 - Title your site"
+         echo "    describe              - Create a site description"
+         echo "    mkdir     {directory} - Create a directory"
+         echo "    rmdir     {directory} - Delete a directory"
+         echo "    edit       {filename} - Publish a document"
+         echo "    upload     {filename} - Transfer a file via ZMODEM to SDF"
+         echo "    ls                    - List the current directory"
+         echo "    cd        {directory} - Change directory" 
+         echo "    pwd                   - Present working directory"
+         echo "    gopher                - Browse your site"
+         echo "    quit"
+         echo
+         ;;
+  TITLE) CHKDIR
+         echo
+         echo "Please enter a TITLE for your site (60 chars max)"
+         echo "An empty entry will clear your current title"
+         echo "-------------------------------------------------------------"
+         echo ":\c"
+         read parse
+         title=`echo $parse|cut -c1-60`
+         if [ "$title" = "" ]
+          then echo "Name=$LOGNAME" > $GOPHERSPACE/../.cap/$LOGNAME
+               echo "\nTITLE cleared.\n"
+          else echo "Name=[$LOGNAME] $title"   > $GOPHERSPACE/../.cap/$LOGNAME
+               echo "\nTitle: $title\n"
+         fi
+         ;;
+
+   SETUP) /usr/pkg/bin/mkgopherspace
+          if [ ! -L $HOME/gopher ]
+           then echo "Creating SYMLINK to your GOPHER directory .."
+                ln -s $REALGOPHERSPACE $GOPHERSPACE
+          fi
+          SETUP=1
+          cd $GOPHERSPACE
+          ;;
+DESCRIBE) CHKDIR 
+          echo
+          > .links
+          echo "Please enter a DESCRIPTION for your site (60 chars max)"
+          echo "End your entry with a '.' on a single line"
+          echo "-------------------------------------------------------------"
+          count=1
+          while [ "$count" -lt "10" ]
+          do
+          echo ":\c"
+          read parse
+          entry=`echo $parse|cut -c1-60`
+        
+          if [ "$entry" != "." ]
+          then  echo "Name=$entry"   >> .links
+                echo "Type=i"        >> .links
+                echo "Path=fake"     >> .links
+                echo "Numb=$count\n" >> .links
+          fi
+ 
+          if [ "$entry" = "." ]
+           then count=10
+           else count=`expr $count + 1`
+          fi
+
+          done
+
+          echo 
+          grep Name= .links|cut -c6-66
+          ;;  
+  CHMOD) CHKDIR
+         chmod -R ug+rx,u+w,o+r,o-wx $REALGOPHERSPACE
+         /usr/pkg/bin/mkgopherspace 
+         ;;       
+  HOWTO) more ~ftp/pub/sdf/faq/GOPHER/02 ;;
+     LS) ls -la ;;
+    PWD) pwd ;;
+  EDIT*) file=`echo $parse|awk '{print $2}'`
+         if [ "$file" = "" ]
+          then echo "\n  edit {filename}\n"
+          else case $file in
+               *../*|*.forward*|*.plan*|.*mutt*) echo "\n  edit {file}\n";;
+                   *) if [ "`id -g`" = "50" ]
+                       then /usr/pkg/bin/pico -t -b -o $HOME $PWD/$file 
+                       else $EDITOR $PWD/$file
+                      fi ;;
+               esac
+         fi
+         ;;
+
+ MKDIR*) directory=`echo $parse|awk '{print $2}'`
+         mkdir $directory
+         ;;
+ RMDIR*) directory=`echo $parse|awk '{print $2}'`
+         rmdir $directory
+         ;;
+    CD*) directory=`echo $parse|awk '{print $2}'`
+         if [ "$directory" = "" ]
+         then CHKDIR
+              if [ "$?" = "0" ]
+              then cd $GOPHERSPACE
+              fi
+         else if [ -d $directory ] || [ -L $directory ]
+              then cd $directory
+              else echo "$directory doesn't exist"
+              fi
+         fi
+         ;;
+ GOPHER) # gopher -s gopher://sdf.org/users/$LOGNAME ;;
+         lynx -anonymous -restrictions=all gopher://sdf.org ;;
+ UPLOAD) upload ;;
+   QUIT) #if [ -d $REALGOPHERSPACE ]
+         #then if [ "`du -ks $REALGOPHERSPACE|awk '{print $1}'`" -le "5" ]
+         #     then echo "Your GOPHERSPACE is too small (less than 5k)"
+         #          echo "Purge your data? (y/n) \c"
+         #          case `/usr/pkg/bin/getchar` in
+         #          y|Y|121|89) echo "YES"
+         #                      echo "Purging .."
+         #                      touch $GOPHERSPACE/.delete
+         #                      /usr/pkg/bin/mkgopherspace 
+         #                      exit 0 ;;
+         #                   *) echo "NO"
+         #                      echo "No action taken" ;;
+         #          esac
+         #     fi
+         #fi 
+         echo
+         echo "If you are going to use your gopherspace for blogging, type"
+         echo "'phlog' at the shell to list your site in the SDF phlogosphere."
+         echo
+         exit 0 ;;
+      *) echo "\nType HELP for Commands\n" ;;
+esac
+done         

@@ -1,0 +1,3 @@
+/defaults       type:=pcfs;opts:=rw,nosuid,noatime
+
+usb1            dev:=/dev/sde0

@@ -1,0 +1,12 @@
+sensor sensor_config_version 1
+sensor sensor_sysdep_private 0
+sensor sensor_float_factor 10000
+sensor gkrellm_float_factor 1000
+sensor "________________cpu0_temperature" "________________cpu0_temperature" 10000 0 1 0
+sensor "________________cpu1_temperature" "________________cpu1_temperature" 10000 0 1 0
+sensor "cpu1_temperature" "___acpitz0_cpu0/cpu1_temperature" 10000 0 0 0
+sensor "cpu1_temperature" "___acpitz1_cpu0/cpu1_temperature" 10000 0 0 0
+sensor "________________acpibat0_voltage" "________________acpibat0_voltage" 10000 0 1 0
+sensor "_________acpibat0_design_voltage" "_________acpibat0_design_voltage" 10000 0 0 0
+sensor units_fahrenheit 0
+sensor volt_display_mode 0

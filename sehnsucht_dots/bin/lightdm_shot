@@ -1,0 +1,3 @@
+#!/bin/sh
+DISPLAY=:0 XAUTHORITY=/var/run/lightdm/root/$DISPLAY xwd -root > /tmp/greeter.xwd
+convert /tmp/greeter.xwd /export/home/edmond/greeter.png

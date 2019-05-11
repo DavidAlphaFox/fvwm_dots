@@ -1,0 +1,2 @@
+#!/bin/sh
+xli -onroot -fullscreen $HOME/Pictures/Wallpapers/saturn1.jpg &
